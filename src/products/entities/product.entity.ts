@@ -6,14 +6,16 @@ import { Order } from 'src/orders/entities/order.entity';
 import { Shop } from 'src/shops/entities/shop.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
 import { Type } from 'src/types/entities/type.entity';
-enum ProductStatus {
+
+export enum ProductStatus {
   PUBLISH = 'publish',
   DRAFT = 'draft',
 }
-enum ProductType {
+export enum ProductType {
   SIMPLE = 'simple',
   VARIABLE = 'variable',
 }
+
 
 export class Product extends CoreEntity {
   name: string;
@@ -65,7 +67,6 @@ export class Variation {
   quantity: number;
   options: VariationOption[];
 }
-
 export class VariationOption {
   name: string;
   value: string;

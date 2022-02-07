@@ -1,3 +1,4 @@
+// import { Product } from './products/schemas/product.schema';
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { CommonModule } from './common/common.module';
@@ -41,7 +42,7 @@ import { RefundsModule } from './refunds/refunds.module';
     AddressesModule,
     ImportsModule,
     AuthModule,
-    RefundsModule,
+    RefundsModule,   
   ],
   controllers: [],
   providers: [],

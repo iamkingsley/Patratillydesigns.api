@@ -1,31 +1,38 @@
-import { Injectable } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { GetProductsDto, ProductPaginator } from './dto/get-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { paginate } from 'src/common/pagination/paginate';
-import productsJson from '@db/products.json';
 import Fuse from 'fuse.js';
 import { GetPopularProductsDto } from './dto/get-popular-products.dto';
-const products = plainToClass(Product, productsJson);
+import { Model } from 'mongoose';
+import { PRODUCT_MODEL } from 'src/common/constants';
+
 const options = {
   keys: ['name', 'type.slug', 'categories.slug', 'status', 'shop_id'],
   threshold: 0.3,
 };
-const fuse = new Fuse(products, options);
 @Injectable()
 export class ProductsService {
-  private products: Product[] = products;
+  constructor(
+    @Inject(PRODUCT_MODEL)
+    private productModel: Model<Product>,
+  ) {}
+  
   create(createProductDto: CreateProductDto) {
-    return this.products[0];
+    const createdProduct = new this.productModel(createProductDto);
+    return createdProduct.save();
   }
 
-  getProducts({ limit, page, search }: GetProductsDto): ProductPaginator {
+  async getProducts({ limit, page, search }: GetProductsDto): Promise<ProductPaginator> {
     if (!page) page = 1;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    let data: Product[] = this.products;
+    let data = await this.productModel.find().exec();
+    console.log('getProducts: ', data)
+    const fuse = new Fuse(data, options);
+    
     if (search) {
       const parseSearchParams = search.split(';');
       for (const searchParam of parseSearchParams) {
@@ -57,9 +64,11 @@ export class ProductsService {
     };
   }
 
-  getProductBySlug(slug: string): Product {
-    const product = this.products.find((p) => p.slug === slug);
-    const related_products = this.products
+  async getProductBySlug(slug: string): Promise<any> {
+    const products = await this.productModel.find().exec();
+    const product = products.find((p) => p.slug === slug);
+    console.log('getProductBySlug: ', product);
+    const related_products = products
       .filter((p) => p.type.slug === product.type.slug)
       .slice(0, 20);
     return {
@@ -67,14 +76,16 @@ export class ProductsService {
       related_products,
     };
   }
-  getPopularProducts({ shop_id, limit }: GetPopularProductsDto): Product[] {
-    return this.products?.slice(0, limit);
+  async getPopularProducts({ shop_id, limit }: GetPopularProductsDto): Promise<Product[]> {
+    const products = await this.productModel.find().exec();
+    return products?.slice(0, limit);
   }
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return this.products[0];
+  update(id: number, updateProductDto: UpdateProductDto): Promise<any> {
+    console.log('/api/updata ',updateProductDto)
+    return this.productModel.updateOne({ id }, updateProductDto).exec();
   }
 
   remove(id: number) {
-    return `This action removes a #${id} product`;
+    return this.productModel.remove({ id }).exec();
   }
 }
