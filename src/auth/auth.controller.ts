@@ -74,7 +74,8 @@ export class AuthController {
     return this.authService.me();
   }
   @Post('contact-us')
-  contactUs(@Body() addPointsDto: any) {
+  async contactUs(@Body() input: any) {
+    await this.authService.contactUs(input);
     return {
       success: true,
       message: 'Thank you for contacting us. We will get back to you soon.',

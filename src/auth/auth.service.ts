@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   AuthResponse,
   ChangePasswordDto,
@@ -18,10 +18,18 @@ import { v4 as uuidv4 } from 'uuid';
 import { plainToClass } from 'class-transformer';
 import { User } from 'src/users/entities/user.entity';
 import usersJson from 'src/users/users.json';
+import { CONTACT_MODEL } from 'src/common/constants';
+import { Model } from 'mongoose';
+import { Contact } from './entities/contact.entity';
 const users = plainToClass(User, usersJson);
 
 @Injectable()
 export class AuthService {
+  /**
+   *
+   */
+  constructor(@Inject(CONTACT_MODEL)
+    private contactsRepository: Model<Contact>) {}
   private users: User[] = users;
   async register(createUserInput: RegisterDto): Promise<AuthResponse> {
     const user: User = {
@@ -118,6 +126,10 @@ export class AuthService {
     };
   }
 
+  async contactUs(input: Contact): Promise<Contact> {
+    const createdContact = new this.contactsRepository(input);
+    return createdContact.save();
+  }
   // async getUsers({ text, first, page }: GetUsersArgs): Promise<UserPaginator> {
   //   const startIndex = (page - 1) * first;
   //   const endIndex = page * first;
