@@ -14,12 +14,14 @@
     },
     "logo": {
       "id": "862",
-      "original": "https://pickbazarlaravel.s3.ap-southeast-1.amazonaws.com/860/PickBazar.png",
-      "thumbnail": "https://pickbazarlaravel.s3.ap-southeast-1.amazonaws.com/860/conversions/PickBazar-thumbnail.jpg"
+      "original": null,
+      "thumbnail": null
+      // "original": "/patra-tiily.jpg",
+      // "thumbnail": "/patra-tiily.jpg"
     },
     "currency": "USD",
     "taxClass": 1,
-    "siteTitle": "Pickbazar",
+    "siteTitle": "PatraTillyDesigns",
     "deliveryTime": [
       {
         "title": "Express Delivery",
