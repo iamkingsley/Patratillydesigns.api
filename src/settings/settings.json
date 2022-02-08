@@ -15,9 +15,11 @@
     "logo": {
       "id": "862",
       "original": null,
-      "thumbnail": null
+      "thumbnail": null,
       // "original": "/patra-tiily.jpg",
       // "thumbnail": "/patra-tiily.jpg"
+      "width": "100px",
+      "height": "55px"
     },
     "currency": "USD",
     "taxClass": 1,
