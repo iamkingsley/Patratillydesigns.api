@@ -3,7 +3,7 @@
     "id": 1,
     "name": "Grocery",
     "settings": {
-      "isHome": true,
+      "isHome": false,
       "layoutType": "classic",
       "productCard": "neon"
     },
@@ -197,7 +197,7 @@
     "id": 5,
     "name": "Clothing",
     "settings": {
-      "isHome": false,
+      "isHome": true,
       "layoutType": "classic",
       "productCard": "xenon"
     },
