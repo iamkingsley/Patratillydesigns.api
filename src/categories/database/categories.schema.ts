@@ -4,6 +4,9 @@ import { AttachmentSchema } from "src/common/schema/attachment.schema";
 import { ProductSchema } from 'src/products/database/products.schema';
 
 export const CategorySchema = new mongoose.Schema({
+  id: String,
+  created_at: Date,
+  updated_at: Date,
   name: String,
   slug: String,
   parent: { type: Object, required: false },// CategorySchema;
@@ -13,4 +16,4 @@ export const CategorySchema = new mongoose.Schema({
   icon: { type: Object, required: false },
   type: { type: TypeSchema }, // TypeSchema;
   products: { type: [ProductSchema], required: false },// [ProductSchema],
-})
+});

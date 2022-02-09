@@ -45,7 +45,7 @@ export class OrdersService {
     let data: Order[] = this.orders;
 
     if (shop_id && shop_id !== 'undefined') {
-      data = this.orders?.filter((p) => p?.shop?.id === Number(shop_id));
+      // data = this.orders?.filter((p) => p?.shop?.id === Number(shop_id));
     }
     const results = data.slice(startIndex, endIndex);
     const url = `/orders?search=${search}&limit=${limit}`;
@@ -55,8 +55,8 @@ export class OrdersService {
     };
   }
 
-  getOrderById(id: number): Order {
-    return this.orders.find((p) => p.id === Number(id));
+  getOrderById(id: number) {
+    // return this.orders.find((p) => p.id === Number(id));
   }
   getOrderByTrackingNumber(tracking_number: string): Order {
     const parentOrder = this.orders.find(

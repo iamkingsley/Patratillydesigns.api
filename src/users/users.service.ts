@@ -41,7 +41,7 @@ export class UsersService {
     };
   }
   findOne(id: number) {
-    return this.users.find((user) => user.id === id);
+    // return this.users.find((user) => user.id === id);
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

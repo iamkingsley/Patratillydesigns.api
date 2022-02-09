@@ -38,8 +38,8 @@ export class CouponsService {
     };
   }
 
-  getCoupon(id: number): Coupon {
-    return this.coupons.find((p) => p.id === id);
+  getCoupon(id: number) {
+    // return this.coupons.find((p) => p.id === id);
   }
 
   update(id: number, updateCouponDto: UpdateCouponDto) {

@@ -27,7 +27,7 @@ export class AttributesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.attributesService.findOne(+id);
+    // return this.attributesService.findOne(+id);
   }
 
   @Put(':id')

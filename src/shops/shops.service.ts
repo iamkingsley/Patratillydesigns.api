@@ -53,7 +53,7 @@ export class ShopsService {
     const endIndex = page * limit;
     let staffs: Shop['staffs'] = [];
     if (shop_id) {
-      staffs = this.shops.find((p) => p.id === Number(shop_id))?.staffs ?? [];
+      // staffs = this.shops.find((p) => p.id === Number(shop_id))?.staffs ?? [];
     }
     const results = staffs?.slice(startIndex, endIndex);
     const url = `/staffs?limit=${limit}`;

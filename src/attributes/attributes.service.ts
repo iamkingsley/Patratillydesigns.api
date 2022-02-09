@@ -17,8 +17,8 @@ export class AttributesService {
     return this.attributes;
   }
 
-  findOne(id: number) {
-    return this.attributes.find((p) => p.id === Number(id));
+  findOne(id: string) {
+    // return this.attributes.find((p) => p.id === id);
   }
 
   update(id: number, updateAttributeDto: UpdateAttributeDto) {

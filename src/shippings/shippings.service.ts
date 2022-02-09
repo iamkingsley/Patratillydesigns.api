@@ -19,7 +19,7 @@ export class ShippingsService {
   }
 
   findOne(id: number) {
-    return this.shippings.find((shipping) => shipping.id === Number(id));
+    // return this.shippings.find((shipping) => shipping.id === Number(id));
   }
 
   update(id: number, updateShippingDto: UpdateShippingDto) {

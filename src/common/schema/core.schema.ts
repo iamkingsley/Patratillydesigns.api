@@ -1,7 +1,5 @@
-import mongoose from "mongoose";
-
-export const CoreSchema = new mongoose.Schema({
-  id: Number,
+export const CoreSchema = {
+  id: String,
   created_at: Date,
   updated_at: Date,
-})
+}
