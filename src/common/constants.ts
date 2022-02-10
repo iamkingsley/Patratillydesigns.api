@@ -5,4 +5,7 @@ export const PRODUCT = 'PRODUCT';
 export const CONTACT_MODEL = 'CONTACT_MODEL';
 export const CONTACT = 'CONTACT';
 export const CATEGORY_MODEL = 'CATEGORY_MODEL';
-export const  CATEGORY = 'CATEGORY';
+export const CATEGORY = 'CATEGORY';
+export const ATTRIBUTE = 'ATTRIBUTE';
+export const ATTRIBUTE_MODEL = 'ATTRIBUTE_MODEL';
+

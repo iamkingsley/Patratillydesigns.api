@@ -1,31 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { v4 } from 'uuid';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateAttributeDto } from './dto/create-attribute.dto';
 import { UpdateAttributeDto } from './dto/update-attribute.dto';
-import attributesJson from '@db/attributes.json';
 import { Attribute } from './entities/attribute.entity';
-import { plainToClass } from 'class-transformer';
+import { Model } from 'mongoose';
+import { ATTRIBUTE_MODEL } from 'src/common/constants';
 
-const attributes = plainToClass(Attribute, attributesJson);
 @Injectable()
 export class AttributesService {
-  private attributes: Attribute[] = attributes;
-  create(createAttributeDto: CreateAttributeDto) {
-    return this.attributes[0];
+  constructor(@Inject(ATTRIBUTE_MODEL) private attributeRepository: Model<Attribute>) {}
+  async create(createAttributeDto: CreateAttributeDto) {
+    const attr = {
+      id: v4(),
+      ...createAttributeDto,
+      created_at: new Date(),
+      updated_at: new Date(),
+    } 
+    const attribute = new this.attributeRepository(attr);
+    return await attribute.save();
   }
 
   findAll() {
-    return this.attributes;
+    return this.attributeRepository.find().exec();
   }
 
-  findOne(id: string) {
-    // return this.attributes.find((p) => p.id === id);
+  async findOne(id: string) {
+    const attr = await this.attributeRepository.findOne({id}).exec();
+    console.log("attr: ", attr);
+    return attr;
   }
 
-  update(id: number, updateAttributeDto: UpdateAttributeDto) {
-    return this.attributes[0];
+  async update(id: string, updateAttributeDto: UpdateAttributeDto): Promise<any> {
+    return this.attributeRepository.updateOne({id}, {...updateAttributeDto}).exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} attribute`;
+  remove(id: string) {
+    return this.attributeRepository.remove({id}).exec();
   }
 }

@@ -30,7 +30,7 @@ export class CategoriesService {
       id: v4(),
       ...createCategoryDto,
       created_at: new Date(),
-      updated_at: new Date,
+      updated_at: new Date(),
     }
     const category = new this.categoriesRepository(cat)
    return await category.save();

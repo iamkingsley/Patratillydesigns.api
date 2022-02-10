@@ -10,9 +10,12 @@ export const AttributeValueSchema = new mongoose.Schema({
 })
 
 export const AttributeSchema = new mongoose.Schema({
+    id: String,
     name: String,
     shop_id: Number,
     shop: ShopSchema,
     slug: String,
     values: { type: [AttributeValueSchema] },
+    created_at: Date,
+    updated_at: Date,
 })
