@@ -22,7 +22,8 @@ export class ProductsService {
   
   create(createProductDto: CreateProductDto) {
     const createdProduct = new this.productModel(createProductDto);
-    return createdProduct.save();
+    console.log('product: ', createProductDto)
+    // return createdProduct.save();
   }
 
   async getProducts({ limit, page, search }: GetProductsDto): Promise<ProductPaginator> {

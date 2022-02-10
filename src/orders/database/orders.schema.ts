@@ -1,16 +1,13 @@
 import mongoose from 'mongoose';
 import { UserAddressSchema } from 'src/addresses/database/address.schema';
-import { CouponSchema } from 'src/coupons/database/coupons.schema';
-import { ShopSchema } from 'src/shops/database/shops.schema';
-import { UserSchema } from 'src/users/database/users.schema';
 
 export const OrderSchema = new mongoose.Schema({
   tracking_number: String,
   customer_id: Number,
   customer_contact: String,
-  customer: { type: UserSchema }, // UserSchema,
-  parent_order: { type: Object, required: false }, // OrderSchema,
-  children: { type: [Object] },// [OrderSchema],
+  customer: { type: mongoose.Types.ObjectId, ref: 'UserSchema' },
+  parent_order: { type: mongoose.Types.ObjectId, required: false },
+  children: [{ type: mongoose.Types.ObjectId, ref: 'OrderSchema' }],
   status: String, // OrderStatus,
   amount: Number,
   sales_tax: Number,
@@ -18,12 +15,22 @@ export const OrderSchema = new mongoose.Schema({
   paid_total: Number,
   payment_id: { type: String, required: false },
   payment_gateway: String, // PaymentGatewayType,
-  coupon: { type: CouponSchema, required: false }, // CouponSchema,
-  shop: { type: ShopSchema },
+  coupon: {
+    type: mongoose.Types.ObjectId,
+    ref: 'CouponSchema',
+    required: false
+  },
+  shop: {
+    type: mongoose.Types.ObjectId,
+    ref: 'ShopSchema'
+  },
   discount: { type: Number, required: false },
   delivery_fee: Number,
   delivery_time: String,
-  products: { type: [Object] }, // [ProductSchema],
-  billing_address: { type: UserAddressSchema },
-  shipping_address: UserAddressSchema,
+  products: [{
+    type: mongoose.Types.ObjectId,
+    ref: 'ProductSchema'
+  }],
+  billing_address: { type: mongoose.Types.ObjectId },
+  shipping_address: { type: mongoose.Types.ObjectId },
 })
