@@ -1,3 +1,5 @@
+import { CATEGORY } from './../../common/constants';
+import { PRODUCT } from 'src/common/constants';
 import mongoose from 'mongoose';
 
 export const CategorySchema = new mongoose.Schema({
@@ -6,14 +8,15 @@ export const CategorySchema = new mongoose.Schema({
   updated_at: Date,
   name: String,
   slug: String,
+  parent_id: String, // uuid
   parent: {
     type: mongoose.Types.ObjectId,
-    ref: 'CategorySchema',
+    ref: CATEGORY,
     required: false
   },
   children: [{
     type: mongoose.Types.ObjectId,
-    ref: 'CategorySchema'
+    ref: CATEGORY
   }],
   details: String,
   image: {
@@ -28,7 +31,7 @@ export const CategorySchema = new mongoose.Schema({
   },
   products: [{
     type: mongoose.Types.ObjectId,
-    ref: 'ProductSchema',
+    ref: PRODUCT,
     required: false
   }],
 });

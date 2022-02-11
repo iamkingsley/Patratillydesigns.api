@@ -6,6 +6,7 @@ import { Type } from 'src/types/entities/type.entity';
 export class Category extends CoreEntity {
   name: string;
   slug: string;
+  parent_id?: string;
   parent?: Category;
   children?: Category[];
   details?: string;
