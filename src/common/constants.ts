@@ -8,6 +8,6 @@ export const CATEGORY_MODEL = 'CATEGORY_MODEL';
 export const CATEGORY = 'CATEGORY';
 export const ATTRIBUTE = 'ATTRIBUTE';
 export const ATTRIBUTE_MODEL = 'ATTRIBUTE_MODEL';
-export const TAGS = 'TAGS';
-export const TAGS_MODEL = 'TAGS_MODEL';
+export const TAG = 'TAG';
+export const TAG_MODEL = 'TAG_MODEL';
 

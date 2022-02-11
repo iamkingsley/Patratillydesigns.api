@@ -1,7 +1,7 @@
 import { v4 } from 'uuid';
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { TAGS_MODEL, TAGS } from 'src/common/constants';
+import { TAG_MODEL, TAG } from 'src/common/constants';
 import { paginate } from 'src/common/pagination/paginate';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { GetTagsDto } from './dto/get-tags.dto';
@@ -13,7 +13,7 @@ export class TagsService {
   /**
    *
    */
-  constructor(@Inject(TAGS_MODEL)
+  constructor(@Inject(TAG_MODEL)
   private tagsRepository: Model<Tag>) {}
   private tags: Tag[] = [];
 
@@ -36,7 +36,7 @@ export class TagsService {
     if (!page) page = 1;
     const tags = await this.tagsRepository.find().exec();
     const url = `/tags?limit=${limit}`;
-    console.log("TAGS: ",tags);
+    console.log("TAG: ",tags);
     return {
       data: tags,
       ...paginate(this.tags.length, page, limit, this.tags.length, url),
