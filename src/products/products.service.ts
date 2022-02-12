@@ -1,3 +1,7 @@
+import { TAG_MODEL, CATEGORY_MODEL } from './../common/constants';
+import { v4 } from 'uuid';
+import slugify from 'slugify';
+import mongoose from 'mongoose';
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { GetProductsDto, ProductPaginator } from './dto/get-products.dto';
@@ -8,6 +12,9 @@ import Fuse from 'fuse.js';
 import { GetPopularProductsDto } from './dto/get-popular-products.dto';
 import { Model } from 'mongoose';
 import { PRODUCT_MODEL } from 'src/common/constants';
+import { slugOptions } from 'src/common/utils/slug-options';
+import { Category } from 'src/categories/entities/category.entity';
+import { Tag } from 'src/tags/entities/tag.entity';
 
 const options = {
   keys: ['name', 'type.slug', 'categories.slug', 'status', 'shop_id'],
@@ -16,24 +23,61 @@ const options = {
 @Injectable()
 export class ProductsService {
   constructor(
-    @Inject(PRODUCT_MODEL)
-    private productModel: Model<Product>,
+    @Inject(PRODUCT_MODEL) private productModel: Model<Product>,
+    @Inject(CATEGORY_MODEL) private categoryModel: Model<Category>,
+    @Inject(TAG_MODEL) private tagModel: Model<Tag>,
   ) {}
   
-  create(createProductDto: CreateProductDto) {
-    const createdProduct = new this.productModel(createProductDto);
-    console.log('product: ', createProductDto)
-    // return createdProduct.save();
+  async create(createProductDto: CreateProductDto) {
+    console.log('products/create: ', createProductDto)
+    const { name, categories, tags } = createProductDto;
+    const prod = {
+      id: v4(),
+      ...createProductDto,
+      slug: slugify(name, slugOptions),
+      created_at: new Date(),
+      updated_at: new Date()
+    }
+    
+    const product = new this.productModel(prod);
+    const prodDoc = await product.save()
+    // push selected categories
+    for(const _id of categories) {
+      // find and update each category with the product info
+      const category = await this.categoryModel.findById(new mongoose.Types.ObjectId(_id));
+      category.products.push(product)
+      await category.save();
+      // now push it
+      prodDoc.categories.push(category)
+    }
+    // push selected tags
+    if (tags) {
+      for(const _id of tags) {
+        // find and update each tag with the product info
+        const tag = await this.tagModel.findById(new mongoose.Types.ObjectId(_id));
+        tag.products.push(product)
+        await tag.save();
+        // now push it
+        prodDoc.tags.push(tag);
+      }
+    }
+
+    return prodDoc.save();
   }
 
   async getProducts({ limit, page, search }: GetProductsDto): Promise<ProductPaginator> {
     if (!page) page = 1;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    let data = await this.productModel.find().exec();
+    let data = await this.productModel.find()
+      .populate('tags')
+      .populate('categories')
+      .exec();
     console.log('getProducts: ', data)
     const fuse = new Fuse(data, options);
-    
+    /*
+    * this makes empty products on the shop
+    *
     if (search) {
       const parseSearchParams = search.split(';');
       for (const searchParam of parseSearchParams) {
@@ -41,6 +85,7 @@ export class ProductsService {
         data = fuse.search(value)?.map(({ item }) => item);
       }
     }
+    */
     // if (status) {
     //   data = fuse.search(status)?.map(({ item }) => item);
     // }
@@ -66,27 +111,40 @@ export class ProductsService {
   }
 
   async getProductBySlug(slug: string): Promise<any> {
-    const products = await this.productModel.find().exec();
-    const product = products.find((p) => p.slug === slug);
-    console.log('getProductBySlug: ', product);
+    const products = await this.productModel
+      .find()
+      .populate('tags')
+      .populate('categories')
+      .exec();
+
+    const product = products.find((p) => p?.slug === slug);
+    console.log('getProductBySlug: ', products, 'slug: ', slug );
     const related_products = products
-      .filter((p) => p.type.slug === product.type.slug)
+      .filter((p) => p?.type?.slug === product?.type?.slug)
       .slice(0, 20);
     return {
       ...product,
       related_products,
     };
   }
+
   async getPopularProducts({ shop_id, limit }: GetPopularProductsDto): Promise<Product[]> {
     const products = await this.productModel.find().exec();
     return products?.slice(0, limit);
   }
-  update(id: number, updateProductDto: UpdateProductDto): Promise<any> {
-    console.log('/api/updata ',updateProductDto)
-    return this.productModel.updateOne({ id }, updateProductDto).exec();
+  
+  async update(id: string, updateProductDto: UpdateProductDto): Promise<any> {
+    console.log('/products/update ', updateProductDto)
+    return this.productModel.updateOne(
+      { id },
+      {
+        ...updateProductDto,
+        updated_at: Date()
+      }
+    ).exec();
   }
 
-  remove(id: number) {
-    return this.productModel.remove({ id }).exec();
+  async remove(id: string): Promise<any> {
+    return this.productModel.deleteOne({ id }).exec();
   }
 }

@@ -1,3 +1,5 @@
+import { CATEGORY, PRODUCT } from './../../common/constants';
+import { TAG } from 'src/common/constants';
 import mongoose from 'mongoose';
 
 export const OrderProductPivot = new mongoose.Schema({
@@ -7,10 +9,6 @@ export const OrderProductPivot = new mongoose.Schema({
   subtotal: Number,
 })
 
-// export const VariationOptionSchema = new mongoose.Schema({
-//   name: String,
-//   value: String,
-// })
 export const VariationSchema = new mongoose.Schema({
   id: Number,
   title: String,
@@ -25,13 +23,19 @@ export const VariationSchema = new mongoose.Schema({
 export const ProductSchema = new mongoose.Schema({
   name: String,
   slug: String,
-  type: { type: mongoose.Types.ObjectId, ref: 'TypeSchema' },
+  type: {
+    type: mongoose.Types.ObjectId,
+    ref: 'TYPE'
+  },
   type_id: Number,
   product_type: String, // ProductType,
-  categories: [{ type: mongoose.Types.ObjectId, ref: 'CategorySchema' }],
+  categories: [{
+    type: mongoose.Types.ObjectId,
+    ref: CATEGORY
+  }],
   tags: [{
     type: mongoose.Types.ObjectId,
-    ref: 'TagSchema',
+    ref: TAG,
     required: false,
   }],
   variations: [{
@@ -44,20 +48,23 @@ export const ProductSchema = new mongoose.Schema({
     // ref: 'VariationSchema',
     required: false
   }],
-  pivot: { type: mongoose.Types.ObjectId, required: false }, 
+  pivot: {
+    type: mongoose.Types.ObjectId,
+    required: false
+  }, 
   orders: [{
     type: mongoose.Types.ObjectId,
-    ref: 'OrderSchema',
+    ref: 'ORDER',
     required: false 
   }], 
   shop: {
     type: mongoose.Types.ObjectId,
-    ref: 'ShopSchema'
+    ref: 'SHOP'
   },
   shop_id: Number,
   related_products: [{
     type: mongoose.Types.ObjectId,
-    ref: 'ProductSchema',
+    ref: PRODUCT,
     required: false
   }], 
   description: String,
@@ -69,12 +76,12 @@ export const ProductSchema = new mongoose.Schema({
   sku: { type: String, required: false },
   gallery: [{
     type: mongoose.Types.ObjectId,
-    ref: 'AttachmentSchema',
+    ref: 'ATTACHMENT',
     required: false
   }],
   image: {
     type: mongoose.Types.ObjectId,
-    ref: 'AttachmentSchema',
+    ref: 'ATTACHMENT',
     required: false
   },
   status: String, 
