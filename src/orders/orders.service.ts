@@ -1,4 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { v4 } from 'uuid';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { GetOrdersDto, OrderPaginator } from './dto/get-orders.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -20,14 +22,31 @@ import {
   CreateOrderStatusDto,
   UpdateOrderStatusDto,
 } from './dto/create-order-status.dto';
+import { ORDER_MODEL, ORDERSTATUS_MODEL } from 'src/common/constants';
 const orders = plainToClass(Order, ordersJson);
 const orderStatus = plainToClass(OrderStatus, orderStatusJson);
 @Injectable()
 export class OrdersService {
+  /**
+   *
+   */
+  constructor(
+    @Inject(ORDER_MODEL) private ordersRepository: Model<Order>,
+    @Inject(ORDERSTATUS_MODEL) private orderStatusRepository: Model<OrderStatus>
+  ) {}
+
   private orders: Order[] = orders;
   private orderStatus: OrderStatus[] = orderStatus;
-  create(createOrderInput: CreateOrderDto) {
-    return this.orders[0];
+
+  async create(createOrderInput: CreateOrderDto) {
+    const newOrder = {
+      id: v4(),
+      ...createOrderInput,
+      created_at: new Date(),
+      updated_at: new Date(),
+    }
+    const order = new this.ordersRepository(newOrder)
+    return await order.save();
   }
 
   getOrders({
@@ -67,16 +86,17 @@ export class OrdersService {
     }
     return parentOrder;
   }
-  getOrderStatuses({
+  async getOrderStatuses({
     limit,
     page,
     search,
     orderBy,
-  }: GetOrderStatusesDto): OrderStatusPaginator {
+  }: GetOrderStatusesDto): Promise<OrderStatusPaginator> {
     if (!page || page.toString() === 'undefined') page = 1;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    const data: OrderStatus[] = this.orderStatus;
+    // const data: OrderStatus[] = this.orderStatus;
+    let data = await this.orderStatusRepository.find();
 
     // if (shop_id) {
     //   data = this.orders?.filter((p) => p?.shop?.id === shop_id);
@@ -108,10 +128,24 @@ export class OrdersService {
       wallet_amount: 0,
     };
   }
-  createOrderStatus(createOrderStatusInput: CreateOrderStatusDto) {
-    return this.orderStatus[0];
+  async createOrderStatus(createOrderStatusInput: CreateOrderStatusDto) {
+    const status = {
+      id: v4(),
+      ...createOrderStatusInput,
+      created_at: new Date(),
+      updated_at: new Date(),
+    }
+    const newStatus =  new this.orderStatusRepository(status);
+    return await newStatus.save();
+    
   }
-  updateOrderStatus(updateOrderStatusInput: UpdateOrderStatusDto) {
-    return this.orderStatus[0];
+
+  async updateOrderStatus(id: string, updateOrderStatusInput: UpdateOrderStatusDto): Promise<any> {
+    return this.orderStatusRepository.updateOne({ id } , {...updateOrderStatusInput}).exec();
+  }
+
+  removeOrderStatus(id: string) {
+    console.log(id)
+    return this.orderStatusRepository.remove({ id }).exec();
   }
 }

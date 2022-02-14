@@ -12,7 +12,7 @@ import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { GetOrdersDto, OrderPaginator } from './dto/get-orders.dto';
-import { CreateOrderStatusDto } from './dto/create-order-status.dto';
+import { CreateOrderStatusDto, UpdateOrderStatusDto } from './dto/create-order-status.dto';
 import { GetOrderStatusesDto } from './dto/get-order-statuses.dto';
 import { CheckoutVerificationDto } from './dto/verify-checkout.dto';
 
@@ -74,12 +74,13 @@ export class OrderStatusController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.ordersService.update(+id, updateOrderDto);
+  async update(@Param('id') id: string, @Body() updateOrderStatusDto: UpdateOrderStatusDto) {
+    console.log("update: ", id, " updateOrderStatusDto: ", updateOrderStatusDto);
+    return await this.ordersService.updateOrderStatus(id, updateOrderStatusDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.ordersService.remove(+id);
+    return this.ordersService.removeOrderStatus(id);
   }
 }

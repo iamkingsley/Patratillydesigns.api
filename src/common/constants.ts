@@ -10,4 +10,8 @@ export const ATTRIBUTE = 'ATTRIBUTE';
 export const ATTRIBUTE_MODEL = 'ATTRIBUTE_MODEL';
 export const TAG = 'TAG';
 export const TAG_MODEL = 'TAG_MODEL';
+export const ORDER = 'ORDER';
+export const ORDER_MODEL = 'ORDER_MODEL';
+export const ORDERSTATUS = 'ORDERSTATUS';
+export const ORDERSTATUS_MODEL = 'ORDERSTATUS_MODEL'
 
