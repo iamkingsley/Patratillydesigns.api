@@ -14,4 +14,5 @@ export const ORDER = 'ORDER';
 export const ORDER_MODEL = 'ORDER_MODEL';
 export const ORDERSTATUS = 'ORDERSTATUS';
 export const ORDERSTATUS_MODEL = 'ORDERSTATUS_MODEL'
-
+export const ADDRES_MODEL = 'ADDRES_MODEL';
+export const ADDRESS = 'ADDRESS';
