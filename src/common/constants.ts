@@ -13,5 +13,8 @@ export const TAG_MODEL = 'TAG_MODEL';
 export const ORDER = 'ORDER';
 export const ORDER_MODEL = 'ORDER_MODEL';
 export const ORDERSTATUS = 'ORDERSTATUS';
-export const ORDERSTATUS_MODEL = 'ORDERSTATUS_MODEL'
+export const ORDERSTATUS_MODEL = 'ORDERSTATUS_MODEL';
+export const CLOUDINARY = 'Cloudinary';
+export const ATTACHMENT = 'ATTACHMENT';
+export const ATTACHMENT_MODEL = 'ATTACHMENT_MODEL';
 

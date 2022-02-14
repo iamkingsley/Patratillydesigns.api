@@ -31,7 +31,7 @@ export class CategoriesService {
       updated_at: new Date()
     }
     
-    console.log('categories/create: ', createCategoryDto)
+    // console.log('categories/create: ', createCategoryDto)
 
     const category = new this.categoriesRepository(cat);
 
