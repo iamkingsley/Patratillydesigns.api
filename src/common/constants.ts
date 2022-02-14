@@ -17,4 +17,5 @@ export const ORDERSTATUS_MODEL = 'ORDERSTATUS_MODEL';
 export const CLOUDINARY = 'Cloudinary';
 export const ATTACHMENT = 'ATTACHMENT';
 export const ATTACHMENT_MODEL = 'ATTACHMENT_MODEL';
-
+export const ADDRES_MODEL = 'ADDRES_MODEL';
+export const ADDRESS = 'ADDRESS';
