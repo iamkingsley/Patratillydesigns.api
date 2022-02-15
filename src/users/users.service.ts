@@ -1,26 +1,25 @@
-import { Injectable } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
+import { Inject, Injectable } from '@nestjs/common';
+import mongoose, { Model } from 'mongoose';
+import Fuse from 'fuse.js';
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUsersDto, UserPaginator } from './dto/get-users.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import Fuse from 'fuse.js';
 
 import { User } from './entities/user.entity';
-import usersJson from './users.json';
 import { paginate } from 'src/common/pagination/paginate';
-const users = plainToClass(User, usersJson);
+import { USER_MODEL } from 'src/common/constants';
 
 const options = {
   keys: ['name', 'type.slug', 'categories.slug', 'status'],
   threshold: 0.3,
 };
-const fuse = new Fuse(users, options);
 @Injectable()
 export class UsersService {
-  private users: User[] = users;
-
+  constructor(@Inject(USER_MODEL) private userRepository: Model<User>) {}
+  
   create(createUserDto: CreateUserDto) {
-    return this.users[0];
+    const user = new this.userRepository(createUserDto)
+    return user.save();
   }
 
   async getUsers({ text, limit, page }: GetUsersDto): Promise<UserPaginator> {
@@ -28,8 +27,9 @@ export class UsersService {
 
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    let data: User[] = this.users;
+    let data: User[] = await this.userRepository.find().exec();
     if (text?.replace(/%/g, '')) {
+      const fuse = new Fuse(data, options);
       data = fuse.search(text)?.map(({ item }) => item);
     }
     const results = data.slice(startIndex, endIndex);
@@ -40,15 +40,25 @@ export class UsersService {
       ...paginate(data.length, page, limit, results.length, url),
     };
   }
-  findOne(id: number) {
-    // return this.users.find((user) => user.id === id);
+  async findOneByEmail(email: string) {
+    return this.userRepository.findOne({ email }).exec(); 
+  }
+
+  findOne(id: string) {
+    return this.userRepository.findById(new mongoose.Types.ObjectId(id)).exec();
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return this.users[0];
+    return this.userRepository.findOneAndUpdate(
+      { id },
+      {
+        ...updateUserDto,
+        updated_at: Date()
+      }
+    ).exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string): Promise<any> {
+    return this.userRepository.deleteOne({ id }).exec();
   }
 }

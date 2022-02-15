@@ -16,3 +16,5 @@ export const ORDERSTATUS = 'ORDERSTATUS';
 export const ORDERSTATUS_MODEL = 'ORDERSTATUS_MODEL'
 export const ADDRES_MODEL = 'ADDRES_MODEL';
 export const ADDRESS = 'ADDRESS';
+export const USER = 'USER';
+export const USER_MODEL = 'USER_MODEL';

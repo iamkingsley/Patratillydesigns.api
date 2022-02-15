@@ -1,4 +1,8 @@
+import { PERMISSIONS } from './../common/enums';
+import { UsersService } from './../users/users.service';
 import { Inject, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import bcrypt from 'bcrypt';
 import {
   AuthResponse,
   ChangePasswordDto,
@@ -15,43 +19,52 @@ import {
   OtpDto,
 } from './dto/create-auth.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { plainToClass } from 'class-transformer';
-import { User } from 'src/users/entities/user.entity';
-import usersJson from 'src/users/users.json';
 import { CONTACT_MODEL } from 'src/common/constants';
 import { Model } from 'mongoose';
 import { Contact } from './entities/contact.entity';
-const users = plainToClass(User, usersJson);
-
 @Injectable()
 export class AuthService {
-  /**
-   *
-   */
-  constructor(@Inject(CONTACT_MODEL)
-    private contactsRepository: Model<Contact>) {}
-  private users: User[] = users;
+
+  constructor(
+    @Inject(CONTACT_MODEL) private contactsRepository: Model<Contact>,
+    private usersService: UsersService,
+    private jwtService: JwtService
+    ) {}
+
   async register(createUserInput: RegisterDto): Promise<AuthResponse> {
-    const user: User = {
+    const hashedPassword = await bcrypt.hash(createUserInput.password, 10);
+    const newUser = {
       id: uuidv4(),
-      ...users[0],
       ...createUserInput,
+      password: hashedPassword,
+      permissions: [PERMISSIONS.CUSTOMER],
       created_at: new Date(),
       updated_at: new Date(),
     };
 
-    this.users.push(user);
+    const user = await this.usersService.create(newUser);
+    const { password, ...result } = user;
+    const payload = { ...result, sub: user._id}
     return {
-      token: 'jwt token',
-      permissions: ['super_admin', 'customer'],
+      token: this.jwtService.sign(payload),
+      permissions: user.permissions,
     };
   }
+
   async login(loginInput: LoginDto): Promise<AuthResponse> {
-    console.log(loginInput);
-    return {
-      token: 'jwt token',
-      permissions: ['super_admin', 'customer'],
-    };
+    const { email, password: plaintextPassword } = loginInput;
+    const user = await this.usersService.findOneByEmail(email);
+    const isPasswordMatching = await bcrypt.compare(plaintextPassword, user.password);
+
+    if (user && isPasswordMatching) {
+      const { password, ...result } = user;
+      const payload = { ...result, sub: user._id}
+      return {
+        token: this.jwtService.sign(payload),
+        permissions: user.permissions,
+      };
+    }
+    return null;
   }
   async changePassword(
     changePasswordInput: ChangePasswordDto,
@@ -130,27 +143,8 @@ export class AuthService {
     const createdContact = new this.contactsRepository(input);
     return createdContact.save();
   }
-  // async getUsers({ text, first, page }: GetUsersArgs): Promise<UserPaginator> {
-  //   const startIndex = (page - 1) * first;
-  //   const endIndex = page * first;
-  //   let data: User[] = this.users;
-  //   if (text?.replace(/%/g, '')) {
-  //     data = fuse.search(text)?.map(({ item }) => item);
-  //   }
-  //   const results = data.slice(startIndex, endIndex);
-  //   return {
-  //     data: results,
-  //     paginatorInfo: paginate(data.length, page, first, results.length),
-  //   };
-  // }
-  // public getUser(getUserArgs: GetUserArgs): User {
-  //   return this.users.find((user) => user.id === getUserArgs.id);
-  // }
-  me(): User {
-    return this.users[0];
-  }
 
-  // updateUser(id: number, updateUserInput: UpdateUserInput) {
-  //   return `This action updates a #${id} user`;
-  // }
+  me(req) {
+    return this.usersService.findOne(req.user.userId)
+  }
 }

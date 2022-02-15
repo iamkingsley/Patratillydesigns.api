@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { LocalAuthGuard } from './local.auth.guards';
+import { Controller, Get, Post, Body, UseGuards, Request, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   ChangePasswordDto,
@@ -12,6 +13,7 @@ import {
   VerifyForgetPasswordDto,
   VerifyOtpDto,
 } from './dto/create-auth.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller()
 export class AuthController {
@@ -21,43 +23,53 @@ export class AuthController {
   createAccount(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);
   }
-  @Post('token')
+
+  @UseGuards(LocalAuthGuard) // instructs nestjs to use our LocalStrategy to login
+  @Post('token') // login route
   login(@Body() loginDto: LoginDto) {
-    console.log('@Body: ', loginDto)
     return this.authService.login(loginDto);
   }
+
   @Post('social-login-token')
   socialLogin(@Body() socialLoginDto: SocialLoginDto) {
     return this.authService.socialLogin(socialLoginDto);
   }
+
   @Post('otp-login')
   otpLogin(@Body() otpLoginDto: OtpLoginDto) {
     return this.authService.otpLogin(otpLoginDto);
   }
+
   @Post('send-otp-code')
   sendOtpCode(@Body() otpDto: OtpDto) {
     return this.authService.sendOtpCode(otpDto);
   }
+
   @Post('verify-otp-code')
   verifyOtpCode(@Body() verifyOtpDto: VerifyOtpDto) {
     return this.authService.verifyOtpCode(verifyOtpDto);
   }
+
   @Post('forget-password')
   forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
     return this.authService.forgetPassword(forgetPasswordDto);
   }
+
   @Post('reset-password')
   resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPassword(resetPasswordDto);
   }
+
   @Post('change-password')
   changePassword(@Body() changePasswordDto: ChangePasswordDto) {
     return this.authService.changePassword(changePasswordDto);
   }
+
   @Post('logout')
   async logout(): Promise<boolean> {
     return true;
   }
+
   @Post('verify-forget-password-token')
   verifyForgetPassword(
     @Body() verifyForgetPasswordDto: VerifyForgetPasswordDto,
@@ -65,14 +77,17 @@ export class AuthController {
     return this.authService.verifyForgetPasswordToken(verifyForgetPasswordDto);
   }
 
+  @UseGuards(JwtAuthGuard) // protects & and checks request for valid bear TOKEN
   @Get('me')
-  me() {
-    return this.authService.me();
+  me(@Req() req) {
+    return this.authService.me(req);
   }
+
   @Post('add-points')
   addWalletPoints(@Body() addPointsDto: any) {
-    return this.authService.me();
+    // return this.authService.me();
   }
+
   @Post('contact-us')
   async contactUs(@Body() input: any) {
     await this.authService.contactUs(input);

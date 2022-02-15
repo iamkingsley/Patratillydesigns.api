@@ -13,6 +13,7 @@ export class User extends CoreEntity {
   shops?: Shop[];
   managed_shop?: Shop;
   is_active?: boolean = true;
+  permissions?: string[];
   address?: Address[];
   orders?: Order[];
 }
