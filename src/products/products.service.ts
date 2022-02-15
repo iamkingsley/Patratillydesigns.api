@@ -17,7 +17,7 @@ import { Category } from 'src/categories/entities/category.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
 
 const options = {
-  keys: ['name', 'type.slug', 'categories.slug', 'status', 'shop_id'],
+  keys: ['name', /*'type.slug'*/, 'categories.slug', 'status', 'shop_id'],
   threshold: 0.3,
 };
 @Injectable()
@@ -29,7 +29,6 @@ export class ProductsService {
   ) {}
   
   async create(createProductDto: CreateProductDto) {
-    console.log('products/create: ', createProductDto)
     const { name, categories, tags } = createProductDto;
     const prod = {
       id: v4(),
@@ -69,39 +68,24 @@ export class ProductsService {
     if (!page) page = 1;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
+    
     let data = await this.productModel.find()
       .populate('tags')
       .populate('categories')
       .exec();
-    console.log('getProducts: ', data)
     const fuse = new Fuse(data, options);
-    /*
-    * this makes empty products on the shop
-    *
+
     if (search) {
       const parseSearchParams = search.split(';');
-      for (const searchParam of parseSearchParams) {
-        const [key, value] = searchParam.split(':');
-        data = fuse.search(value)?.map(({ item }) => item);
+      // type.slug is always included; so we need a length of 2 or more to filter
+      if (parseSearchParams?.length > 1) {
+        for (const searchParam of parseSearchParams) {
+          const [key, value] = searchParam.split(':');
+          data = fuse.search(value)?.map(({ item }) => item);
+        }
       }
     }
-    */
-    // if (status) {
-    //   data = fuse.search(status)?.map(({ item }) => item);
-    // }
-    // if (text?.replace(/%/g, '')) {
-    //   data = fuse.search(text)?.map(({ item }) => item);
-    // }
-    // if (hasType) {
-    //   data = fuse.search(hasType)?.map(({ item }) => item);
-    // }
-    // if (hasCategories) {
-    //   data = fuse.search(hasCategories)?.map(({ item }) => item);
-    // }
-
-    // if (shop_id) {
-    //   data = this.products.filter((p) => p.shop_id === Number(shop_id));
-    // }
+    
     const results = data.slice(startIndex, endIndex);
     const url = `/products?search=${search}&limit=${limit}`;
     return {
@@ -118,10 +102,10 @@ export class ProductsService {
       .exec();
 
     const product = products.find((p) => p?.slug === slug);
-    console.log('getProductBySlug: ', products, 'slug: ', slug );
     const related_products = products
       .filter((p) => p?.type?.slug === product?.type?.slug)
       .slice(0, 20);
+      
     return {
       ...product,
       related_products,
