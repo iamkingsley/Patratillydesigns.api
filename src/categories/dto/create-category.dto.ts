@@ -6,6 +6,8 @@ export class CreateCategoryDto extends PickType(Category, [
   'type',
   'details',
   'parent',
+  'parent_id',
+  'type_id',
   'icon',
   'image',
 ]) {}

@@ -31,8 +31,6 @@ export class CategoriesService {
       updated_at: new Date()
     }
     
-    // console.log('categories/create: ', createCategoryDto)
-
     const category = new this.categoriesRepository(cat);
 
     const parentCat = await this.categoriesRepository
@@ -76,12 +74,6 @@ export class CategoriesService {
     if (parent === null) {
       data = data.filter((item) => item.parent === null);
     }
-    // if (text?.replace(/%/g, '')) {
-    //   data = fuse.search(text)?.map(({ item }) => item);
-    // }
-    // if (hasType) {
-    //   data = fuse.search(hasType)?.map(({ item }) => item);
-    // }
 
     const results = data.slice(startIndex, endIndex);
     const url = `/categories?search=${search}&limit=${limit}&parent=${parent}`;
@@ -98,16 +90,70 @@ export class CategoriesService {
   }
 
   async update(slug: string, updateCategoryDto: UpdateCategoryDto): Promise<any> {
-    return this.categoriesRepository.updateOne(
-      { slug },
-      {
-        ...updateCategoryDto,
-        updated_at: Date()
-      }
-    ).exec();
+    const categoryDoc = await this.categoriesRepository.findOne({ slug }).exec();
+    if (
+      updateCategoryDto?.parent_id &&
+      updateCategoryDto?.parent_id !== categoryDoc.parent_id
+    ) {
+      // remove child from it's original parent
+      const originalParentDoc = await this.categoriesRepository
+      .findOne({ id: categoryDoc.parent_id})
+      .populate('children')
+      .exec()
+      originalParentDoc.children.map((cat, i) => {
+        if (cat.slug === categoryDoc.slug) {
+          originalParentDoc.children.splice(i)
+        }
+      });
+      originalParentDoc.save();
+      
+      const newParentDoc
+        = await this.categoriesRepository.findOne({ id: updateCategoryDto.parent_id}).exec();
+      
+        // update child also
+      categoryDoc.parent = newParentDoc;
+      categoryDoc.parent_id = newParentDoc.id;
+      categoryDoc.type_id = updateCategoryDto.type_id;
+      categoryDoc.name = updateCategoryDto.name;
+      categoryDoc.icon = updateCategoryDto.icon;
+      
+      categoryDoc.save()
+
+      // assign child a new parent
+      newParentDoc.children.push(categoryDoc);
+      newParentDoc.save();
+      
+      return categoryDoc;
+    } else {
+      return this.categoriesRepository.updateOne(
+        { slug },
+        {
+          ...updateCategoryDto,
+          updated_at: Date()
+        }
+      ).exec();
+    }
   }
 
   async remove(slug: string): Promise<any> {
+    const categoryDoc = await this.categoriesRepository.findOne({ slug }).exec();
+    // if it has a parent
+    if (categoryDoc?.parent_id) {
+      // find the parent
+      const parentCatDoc =
+        await this.categoriesRepository
+          .findOne({ id: categoryDoc.parent_id })
+          .populate('children')
+          .exec();
+      // remove category from its parent
+      parentCatDoc.children.map((cat, i) => {
+        if (cat.slug === categoryDoc.slug) {
+          parentCatDoc.children.splice(i)
+        }
+      });
+      parentCatDoc.save();
+    }
+    // now delete category
     return this.categoriesRepository.deleteOne({ slug }).exec();
   }
 }
