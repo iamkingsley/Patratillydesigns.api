@@ -1,45 +1,40 @@
 import { v4 } from 'uuid';
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { TAG_MODEL, TAG } from 'src/common/constants';
+import slugify from 'slugify';
+import { TAG_MODEL } from 'src/common/constants';
 import { paginate } from 'src/common/pagination/paginate';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { GetTagsDto } from './dto/get-tags.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { Tag } from './entities/tag.entity';
+import { slugOptions } from 'src/common/utils/slug-options';
 
 @Injectable()
 export class TagsService {
-  /**
-   *
-   */
-  constructor(@Inject(TAG_MODEL)
-  private tagsRepository: Model<Tag>) {}
-  private tags: Tag[] = [];
+
+  constructor(@Inject(TAG_MODEL) private tagsRepository: Model<Tag>) {}
 
   async create(createTagDto: CreateTagDto) {
+    // createTagDto.image = undefined;
     const tag = {
       id: v4(),
       ...createTagDto,
+      slug: slugify(createTagDto.name, slugOptions),
       created_at: new Date(),
       updated_at: new Date(),
     }
     const tagCreated = new this.tagsRepository(tag);
     return await tagCreated.save();
-    // return {
-    //   id: this.tags.length + 1,
-    //   ...createTagDto,
-    // };
   }
 
   async findAll({ page, limit }: GetTagsDto) {
     if (!page) page = 1;
     const tags = await this.tagsRepository.find().exec();
     const url = `/tags?limit=${limit}`;
-    console.log("TAG: ",tags);
     return {
       data: tags,
-      ...paginate(this.tags.length, page, limit, this.tags.length, url),
+      ...paginate(tags.length, page, limit, tags.length, url),
     };
   }
 
@@ -48,10 +43,13 @@ export class TagsService {
   }
 
   async update(id: string, updateTagDto: UpdateTagDto): Promise<any>{
+    if (Object.keys(updateTagDto?.image).length === 0) {
+      updateTagDto.image = undefined;
+    }
     return await this.tagsRepository.updateOne({ id },{...updateTagDto}).exec();
   }
 
   remove(id: string) {
-    this.tagsRepository.remove({ id}).exec();
+    return this.tagsRepository.remove({ id}).exec();
   }
 }
