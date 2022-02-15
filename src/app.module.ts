@@ -20,6 +20,8 @@ import { AddressesModule } from './addresses/addresses.module';
 import { ImportsModule } from './imports/imports.module';
 import { AuthModule } from './auth/auth.module';
 import { RefundsModule } from './refunds/refunds.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import  Cloudinary  from 'cloudinary';
 
 @Module({
   imports: [
@@ -42,7 +44,8 @@ import { RefundsModule } from './refunds/refunds.module';
     AddressesModule,
     ImportsModule,
     AuthModule,
-    RefundsModule,   
+    RefundsModule,
+    CloudinaryModule,   
   ],
   controllers: [],
   providers: [],
