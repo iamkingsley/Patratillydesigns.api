@@ -16,14 +16,12 @@
       "id": "862",
       "original": null,
       "thumbnail": null,
-      // "original": "/patra-tiily.jpg",
-      // "thumbnail": "/patra-tiily.jpg"
       "width": "100px",
       "height": "55px"
     },
-    "currency": "USD",
+    "currency": "GHS",
     "taxClass": 1,
-    "siteTitle": "PatraTillyDesigns",
+    "siteTitle": "Patra Tilly Designs",
     "deliveryTime": [
       {
         "title": "Express Delivery",
