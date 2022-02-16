@@ -66,6 +66,7 @@ export class AuthService {
     }
     return null;
   }
+
   async changePassword(
     changePasswordInput: ChangePasswordDto,
   ): Promise<CoreResponse> {
@@ -76,6 +77,7 @@ export class AuthService {
       message: 'Password change successful',
     };
   }
+
   async forgetPassword(
     forgetPasswordInput: ForgetPasswordDto,
   ): Promise<CoreResponse> {
@@ -86,6 +88,7 @@ export class AuthService {
       message: 'Password change successful',
     };
   }
+
   async verifyForgetPasswordToken(
     verifyForgetPasswordTokenInput: VerifyForgetPasswordDto,
   ): Promise<CoreResponse> {
@@ -96,6 +99,7 @@ export class AuthService {
       message: 'Password change successful',
     };
   }
+
   async resetPassword(
     resetPasswordInput: ResetPasswordDto,
   ): Promise<CoreResponse> {
@@ -106,6 +110,7 @@ export class AuthService {
       message: 'Password change successful',
     };
   }
+
   async socialLogin(socialLoginDto: SocialLoginDto): Promise<AuthResponse> {
     console.log(socialLoginDto);
     return {
@@ -113,6 +118,7 @@ export class AuthService {
       permissions: ['super_admin', 'customer'],
     };
   }
+
   async otpLogin(otpLoginDto: OtpLoginDto): Promise<AuthResponse> {
     console.log(otpLoginDto);
     return {
@@ -120,6 +126,7 @@ export class AuthService {
       permissions: ['super_admin', 'customer'],
     };
   }
+
   async verifyOtpCode(verifyOtpInput: VerifyOtpDto): Promise<CoreResponse> {
     console.log(verifyOtpInput);
     return {
@@ -127,6 +134,7 @@ export class AuthService {
       success: true,
     };
   }
+  
   async sendOtpCode(otpInput: OtpDto): Promise<OtpResponse> {
     console.log(otpInput);
     return {

@@ -3,10 +3,12 @@ import { Module } from '@nestjs/common';
 import { AddressesService } from './addresses.service';
 import { AddressesController } from './addresses.controller';
 import { addressesProviders } from './database/addresses.provider';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
-    DatabaseModule
+    DatabaseModule,
+    UsersModule,
   ],
   controllers: [AddressesController],
   providers: [

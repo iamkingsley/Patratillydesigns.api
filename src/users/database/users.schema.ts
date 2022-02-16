@@ -4,6 +4,7 @@ import { ADDRESS, ORDER } from 'src/common/constants';
 import { ProfileSchema } from './profile.schema';
 
 export const UserSchema = new mongoose.Schema({
+  id: String,
   name: String,
   email: { type: String, unique: true },
   password: String,
@@ -30,11 +31,11 @@ export const UserSchema = new mongoose.Schema({
     default: true,
     required: false
   },
-  address: { 
+  address: [{ 
     type: mongoose.Types.ObjectId,
     ref: ADDRESS,
     required: false
-  },
+  }],
   orders: [{
     type:  mongoose.Types.ObjectId,
     ref: ORDER,

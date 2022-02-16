@@ -1,11 +1,8 @@
 import mongoose from 'mongoose';
-
-export enum AddressType {
-  BILLING = 'billing',
-  SHIPPING = 'shipping',
-}
+import { AddressType } from 'src/common/enums';
 
 export const AddressSchema = new mongoose.Schema({
+  id: String,
   title: String,
   default: Boolean,
   address: new mongoose.Schema({
@@ -15,11 +12,11 @@ export const AddressSchema = new mongoose.Schema({
     state: String,
     zip: String,
   }),
-  type: String,
-  // type:  { 
-  //   type: String,
-  //   enum: AddressType,
-  //   default: AddressType.BILLING
-  // },
+  type:  { 
+    type: String,
+    enum: AddressType,
+    default: AddressType.BILLING
+  },
   customer: { type: mongoose.Types.ObjectId, ref: 'USER' },
+  customer_id: String,
 })

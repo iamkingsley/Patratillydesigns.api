@@ -40,12 +40,19 @@ export class UsersService {
       ...paginate(data.length, page, limit, results.length, url),
     };
   }
+  
   async findOneByEmail(email: string) {
     return this.userRepository.findOne({ email }).exec(); 
   }
 
+  async findOneByUuid(id: string) {
+    return this.userRepository.findOne({ id }).exec(); 
+  }
+
   findOne(id: string) {
-    return this.userRepository.findById(new mongoose.Types.ObjectId(id)).exec();
+    return this.userRepository
+      .findById(new mongoose.Types.ObjectId(id))
+      .populate('address').exec();
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

@@ -20,16 +20,6 @@ export class AddressesController {
     return this.addressesService.create(createAddressDto);
   }
 
-  @Get()
-  addresses() {
-    return this.addressesService.findAll();
-  }
-
-  @Get(':id')
-  address(@Param('id') id: string) {
-    return this.addressesService.findOne(id);
-  }
-
   @Put(':id')
   updateAddress(
     @Param('id') id: string,

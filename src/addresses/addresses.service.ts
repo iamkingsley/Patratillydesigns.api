@@ -5,12 +5,16 @@ import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { Model } from 'mongoose';
 import { Address } from './entities/address.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AddressesService {
-  constructor(@Inject(ADDRES_MODEL) private addressRepository: Model<Address>) {}
+  constructor(
+    @Inject(ADDRES_MODEL) private addressRepository: Model<Address>,
+    private userService: UsersService,
+  ) {}
 
-  create(createAddressDto: CreateAddressDto) {
+  async create(createAddressDto: CreateAddressDto) {
     const _address = {
       id: v4(),
       ...createAddressDto,
@@ -18,15 +22,13 @@ export class AddressesService {
       updated_at: Date()
     }
     const address = new this.addressRepository(_address);
-    return address.save();
-  }
+    address.save();
 
-  findAll() {
-    return `This action returns all addresses`;
-  }
+    const customer = await this.userService.findOneByUuid(createAddressDto.customer_id);
+    customer.address.push(address);
+    customer.save();
 
-  findOne(id: string) {
-    return `This action returns a #${id} address`;
+    return address;
   }
 
   async update(id: string, updateAddressDto: UpdateAddressDto): Promise<any> {
@@ -36,10 +38,19 @@ export class AddressesService {
         ...updateAddressDto,
         updated_at: Date()
       }
-    ).exec()
+    ).exec();
   }
 
   async remove(id: string): Promise<any> {
-    return this.addressRepository.deleteOne({ id }).exec();
+    const address = await this.addressRepository.findOne({ id }).exec();
+    const customer = await this.userService.findOneByUuid(address.customer_id);
+    customer.address.map((add, i) => {
+      if (add.id === id) {
+        customer.address.splice(i)
+      }
+    });
+    customer.save();
+
+    return address.delete();
   }
 }
