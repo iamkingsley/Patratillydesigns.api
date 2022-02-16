@@ -10,8 +10,13 @@ export class UploadsService {
 
   
 
-  findAll() {
-    return `This action returns all uploads`;
+  async create(input): Promise<Attachment> {
+    const saveInput = {
+      ...input,
+      created_at: Date.now(),
+      updated_at: Date.now()
+    }
+    return await new this.attachmentRepository(saveInput).save();
   }
 
   findOne(id: number) {

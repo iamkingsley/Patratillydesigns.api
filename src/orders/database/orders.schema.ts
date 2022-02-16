@@ -1,5 +1,6 @@
 import { ADDRESS, ORDER, PRODUCT, USER } from 'src/common/constants';
 import mongoose from 'mongoose';
+// import { UserAddressSchema } from 'src/addresses/database/address.schema';
 
 export const OrderSchema = new mongoose.Schema({
   tracking_number: String,

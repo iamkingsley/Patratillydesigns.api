@@ -1,6 +1,8 @@
 import { PERMISSIONS } from './../../common/enums';
 import mongoose from 'mongoose';
 import { ADDRESS, ORDER } from 'src/common/constants';
+// import { AddressSchema } from 'src/addresses/database/address.schema';
+import { ShopSchema } from 'src/shops/database/shops.schema';
 import { ProfileSchema } from './profile.schema';
 
 export const UserSchema = new mongoose.Schema({
