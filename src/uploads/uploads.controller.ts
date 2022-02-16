@@ -35,12 +35,12 @@ export class UploadsController {
   @UseInterceptors(FilesInterceptor('attachment[]'))
   async uploadImageToCloudinary(@UploadedFiles() attachment: Array<Express.Multer.File>) {
     console.log("file :", attachment)
-    return await this.cloudinaryService.uploadImage(attachment).then((response) => {
+    return await this.cloudinaryService.uploadImage(attachment).then(async(response) => {
        const {
         asset_id,
         url,
        } = response;
-       this.uploadsService.create({
+       const att = await this.uploadsService.create({
           asset_id,
           original: url,
           thumbnail: url 
@@ -48,6 +48,7 @@ export class UploadsController {
 
      return [
         {
+          _id: att._id,
           id: response.asset_id,
           original: response.url,
           thumbnail: response.url,

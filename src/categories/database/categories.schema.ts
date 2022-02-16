@@ -1,4 +1,4 @@
-import { CATEGORY } from './../../common/constants';
+import { CATEGORY, ATTACHMENT } from './../../common/constants';
 import { PRODUCT } from 'src/common/constants';
 import mongoose from 'mongoose';
 
@@ -21,7 +21,7 @@ export const CategorySchema = new mongoose.Schema({
   details: String,
   image: {
     type: mongoose.Types.ObjectId,
-    ref: 'AttachmentSchema',
+    ref: ATTACHMENT,
     required: false
   },
   icon: String,

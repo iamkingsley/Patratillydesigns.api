@@ -1,4 +1,4 @@
-import { CATEGORY, PRODUCT } from './../../common/constants';
+import { ATTACHMENT, CATEGORY, ORDER, PRODUCT } from './../../common/constants';
 import { TAG } from 'src/common/constants';
 import mongoose from 'mongoose';
 
@@ -54,12 +54,13 @@ export const ProductSchema = new mongoose.Schema({
   }, 
   orders: [{
     type: mongoose.Types.ObjectId,
-    ref: 'ORDER',
+    ref: ORDER,
     required: false 
   }], 
   shop: {
     type: mongoose.Types.ObjectId,
-    ref: 'SHOP'
+    ref: 'SHOP',
+    required: false
   },
   shop_id: Number,
   related_products: [{
@@ -76,12 +77,12 @@ export const ProductSchema = new mongoose.Schema({
   sku: { type: String, required: false },
   gallery: [{
     type: mongoose.Types.ObjectId,
-    ref: 'ATTACHMENT',
+    ref: ATTACHMENT,
     required: false
   }],
   image: {
     type: mongoose.Types.ObjectId,
-    ref: 'ATTACHMENT',
+    ref: ATTACHMENT,
     required: false
   },
   status: String, 

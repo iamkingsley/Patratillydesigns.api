@@ -29,10 +29,14 @@ export class ProductsService {
   ) {}
   
   async create(createProductDto: CreateProductDto) {
-    const { name, categories, tags } = createProductDto;
+    const { name, categories, tags, image } = createProductDto;
     const prod = {
       id: v4(),
       ...createProductDto,
+      image: {
+        ...image,
+        _id: new mongoose.Types.ObjectId(image._id)
+      },
       slug: slugify(name, slugOptions),
       created_at: new Date(),
       updated_at: new Date()
@@ -72,6 +76,7 @@ export class ProductsService {
     let data = await this.productModel.find()
       .populate('tags')
       .populate('categories')
+      .populate('image')
       .exec();
     const fuse = new Fuse(data, options);
 

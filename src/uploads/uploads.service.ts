@@ -5,10 +5,9 @@ import { ATTRIBUTE_MODEL } from 'src/common/constants';
 
 @Injectable()
 export class UploadsService {
+
   constructor(@Inject(ATTRIBUTE_MODEL)
   private attachmentRepository: Model<Attachment>) {}
-
-  
 
   async create(input): Promise<Attachment> {
     const saveInput = {
@@ -19,8 +18,8 @@ export class UploadsService {
     return await new this.attachmentRepository(saveInput).save();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} upload`;
+  findOne(id: string) {
+    return this.attachmentRepository.findOne({ id }).exec();
   }
 
   remove(id: number) {

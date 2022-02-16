@@ -11,6 +11,7 @@ import { paginate } from 'src/common/pagination/paginate';
 import { Model } from 'mongoose';
 import { CATEGORY_MODEL } from 'src/common/constants';
 import { slugOptions } from 'src/common/utils/slug-options';
+
 const options = {
   keys: ['name', 'type.slug'],
   threshold: 0.3,
@@ -18,14 +19,19 @@ const options = {
 @Injectable()
 export class CategoriesService {
 
-  constructor(@Inject(CATEGORY_MODEL)
-    private categoriesRepository: Model<Category>) {}
+  constructor(
+    @Inject(CATEGORY_MODEL) private categoriesRepository: Model<Category>,
+    ) {}
 
   async create(createCategoryDto: any) {
-    const { name, parent } = createCategoryDto;
+    const { name, parent, image } = createCategoryDto;
     const cat = {
       id: v4(),
       ...createCategoryDto,
+      image: {
+        ...image,
+        _id: new mongoose.Types.ObjectId(image?._id)
+      },
       slug: slugify(name, slugOptions),
       created_at: new Date(),
       updated_at: new Date()
@@ -54,7 +60,9 @@ export class CategoriesService {
     const endIndex = page * limit;
     let data: Category[] = await this.categoriesRepository
       .find({ parent: null }) // shop navigation fix
-      .populate('children').exec();
+      .populate('children')
+      .populate('image')
+      .exec();
 
     const fuse = new Fuse(data, options);
     /*
