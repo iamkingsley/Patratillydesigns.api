@@ -21,3 +21,5 @@ export const ADDRES_MODEL = 'ADDRES_MODEL';
 export const ADDRESS = 'ADDRESS';
 export const USER = 'USER';
 export const USER_MODEL = 'USER_MODEL';
+export const COUPON = 'COUPON';
+export const COUPON_MODEL = 'COUPON_MODEL';

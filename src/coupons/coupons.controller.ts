@@ -23,29 +23,31 @@ export class CouponsController {
   }
 
   @Get()
-  getCoupons(@Query() query: GetCouponsDto) {
+  getCoupons(@Query() query /*: GetCouponsDto */) {
     return this.couponsService.getCoupons(query);
   }
 
   @Get(':id')
   getCoupon(@Param('id') id: string) {
-    return this.couponsService.getCoupon(+id);
+    return this.couponsService.getCoupon(id);
   }
-  @Get(':id/verify')
-  verify(@Param('id') id: string) {
-    return this.couponsService.getCoupon(+id);
-  }
+
+  // @Get(':id/verify')
+  // verify(@Param('id') id: string) {
+  //   return this.couponsService.getCoupon(id);
+  // }
 
   @Put(':id')
   updateCoupon(
     @Param('id') id: string,
     @Body() updateCouponDto: UpdateCouponDto,
   ) {
-    return this.couponsService.update(+id, updateCouponDto);
+    const coupon = this.couponsService.update(id, updateCouponDto);
+    return coupon;
   }
 
   @Delete(':id')
   deleteCoupon(@Param('id') id: string) {
-    return this.couponsService.remove(+id);
+    return this.couponsService.remove(id);
   }
 }
