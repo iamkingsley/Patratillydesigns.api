@@ -1,8 +1,8 @@
 import { ADDRESS, ORDER, PRODUCT, USER } from 'src/common/constants';
 import mongoose from 'mongoose';
-// import { UserAddressSchema } from 'src/addresses/database/address.schema';
 
 export const OrderSchema = new mongoose.Schema({
+  id: String,
   tracking_number: String,
   customer_id: Number,
   customer_contact: String,
@@ -37,16 +37,21 @@ export const OrderSchema = new mongoose.Schema({
   discount: { type: Number, required: false },
   delivery_fee: Number,
   delivery_time: String,
-  products: [{
-    type: mongoose.Types.ObjectId,
-    ref: PRODUCT
-  }],
-  billing_address: { 
-    type: mongoose.Types.ObjectId,
-    ref: ADDRESS
-  },
-  shipping_address: {
-    type: mongoose.Types.ObjectId,
-    ref: ADDRESS
-  },
+  // products: [{
+  //   type: mongoose.Types.ObjectId,
+  //   ref: PRODUCT
+  // }],
+  products: [],
+  billing_address: Object,
+  // billing_address: { 
+  //   type: mongoose.Types.ObjectId,
+  //   ref: ADDRESS
+  // },
+  shipping_address: Object,
+  // shipping_address: {
+  //   type: mongoose.Types.ObjectId,
+  //   ref: ADDRESS
+  // },
+  created_at: String,
+  updated_at: String
 })

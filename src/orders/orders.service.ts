@@ -1,12 +1,10 @@
 import { Model } from 'mongoose';
 import { v4 } from 'uuid';
+import orderNo from 'order-no';
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { GetOrdersDto, OrderPaginator } from './dto/get-orders.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import ordersJson from '@db/orders.json';
-import orderStatusJson from '@db/order-statuses.json';
-import { plainToClass } from 'class-transformer';
 import { Order } from './entities/order.entity';
 import { OrderStatus } from './entities/order-status.entity';
 import { paginate } from 'src/common/pagination/paginate';
@@ -23,24 +21,22 @@ import {
   UpdateOrderStatusDto,
 } from './dto/create-order-status.dto';
 import { ORDER_MODEL, ORDERSTATUS_MODEL } from 'src/common/constants';
-const orders = plainToClass(Order, ordersJson);
-const orderStatus = plainToClass(OrderStatus, orderStatusJson);
 @Injectable()
 export class OrdersService {
-  /**
-   *
-   */
+
   constructor(
     @Inject(ORDER_MODEL) private ordersRepository: Model<Order>,
     @Inject(ORDERSTATUS_MODEL) private orderStatusRepository: Model<OrderStatus>
   ) {}
 
-  private orders: Order[] = orders;
-  private orderStatus: OrderStatus[] = orderStatus;
-
+  /**
+   * ORDER SERVICES
+   */
   async create(createOrderInput: CreateOrderDto) {
+    const orderNum = orderNo.makeOrderNo(1, 8);
     const newOrder = {
-      id: v4(),
+      id: orderNum,
+      tracking_number: orderNum,
       ...createOrderInput,
       created_at: new Date(),
       updated_at: new Date(),
@@ -49,43 +45,97 @@ export class OrdersService {
     return await order.save();
   }
 
-  getOrders({
+  async getOrders({
     limit,
     page,
     customer_id,
     tracking_number,
     search,
     shop_id,
-  }: GetOrdersDto): OrderPaginator {
+  }: GetOrdersDto): Promise<OrderPaginator> {
     if (!page) page = 1;
 
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    let data: Order[] = this.orders;
+    let orders: Order[] = await this.ordersRepository
+      .find()
+      .populate('products')
+      .populate('billing_address')
+      .populate('shipping_address')
+      .exec();
 
     if (shop_id && shop_id !== 'undefined') {
-      // data = this.orders?.filter((p) => p?.shop?.id === Number(shop_id));
+      orders = orders?.filter((p) => p?.shop?.id === shop_id);
     }
-    const results = data.slice(startIndex, endIndex);
+    const results = orders.slice(startIndex, endIndex);
     const url = `/orders?search=${search}&limit=${limit}`;
     return {
       data: results,
-      ...paginate(data.length, page, limit, results.length, url),
+      ...paginate(orders.length, page, limit, results.length, url),
     };
   }
 
-  getOrderById(id: number) {
-    // return this.orders.find((p) => p.id === Number(id));
+  getOrderById(id: string) {
+    return this.ordersRepository
+      .findOne({ id })
+      .populate('billing_address')
+      .populate('shipping_address')
+      .exec();
   }
-  getOrderByTrackingNumber(tracking_number: string): Order {
-    const parentOrder = this.orders.find(
-      (p) => p.tracking_number === tracking_number,
-    );
+
+  async getOrderByTrackingNumber(tracking_number: string): Promise<Order> {
+    const parentOrder = await this.ordersRepository.findOne({ tracking_number });
     if (!parentOrder) {
-      return this.orders[0];
+      return null; // or NotFound
     }
     return parentOrder;
   }
+  
+  update(id: string, updateOrderInput: UpdateOrderDto) {
+    return this.ordersRepository.findOneAndUpdate(
+      { id },
+      {
+        ...updateOrderInput,
+        updated_at: Date() 
+      }
+    )
+  }
+
+  remove(id: string): Promise<any> {
+    return this.ordersRepository.deleteOne({ id }).exec();
+  }
+
+  verifyCheckout(input: CheckoutVerificationDto): VerifiedCheckoutData {
+    return {
+      total_tax: 0,
+      shipping_charge: 0,
+      unavailable_products: [],
+      wallet_currency: 0,
+      wallet_amount: 0,
+    };
+  }
+
+  /**
+   * ORDER STATUS SERVICES
+   */
+  createOrderStatus(createOrderStatusInput: CreateOrderStatusDto) {
+    const status = {
+      id: v4(),
+      ...createOrderStatusInput,
+      created_at: new Date(),
+      updated_at: new Date(),
+    }
+    const newStatus = new this.orderStatusRepository(status);
+    return newStatus.save();
+  }
+
+  updateOrderStatus(id: string, updateOrderStatusInput: UpdateOrderStatusDto): any {
+    return this.orderStatusRepository.updateOne(
+        { id },
+        {...updateOrderStatusInput}
+      ).exec();
+  }
+
   async getOrderStatuses({
     limit,
     page,
@@ -95,8 +145,7 @@ export class OrdersService {
     if (!page || page.toString() === 'undefined') page = 1;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    // const data: OrderStatus[] = this.orderStatus;
-    let data = await this.orderStatusRepository.find();
+    let data = await this.orderStatusRepository.find().exec();
 
     // if (shop_id) {
     //   data = this.orders?.filter((p) => p?.shop?.id === shop_id);
@@ -109,43 +158,12 @@ export class OrdersService {
       ...paginate(data.length, page, limit, results.length, url),
     };
   }
+
   getOrderStatus(slug: string) {
-    return this.orderStatus.find((p) => p.name === slug);
-  }
-  update(id: number, updateOrderInput: UpdateOrderDto) {
-    return this.orders[0];
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} order`;
-  }
-  verifyCheckout(input: CheckoutVerificationDto): VerifiedCheckoutData {
-    return {
-      total_tax: 0,
-      shipping_charge: 0,
-      unavailable_products: [],
-      wallet_currency: 0,
-      wallet_amount: 0,
-    };
-  }
-  async createOrderStatus(createOrderStatusInput: CreateOrderStatusDto) {
-    const status = {
-      id: v4(),
-      ...createOrderStatusInput,
-      created_at: new Date(),
-      updated_at: new Date(),
-    }
-    const newStatus =  new this.orderStatusRepository(status);
-    return await newStatus.save();
-    
-  }
-
-  async updateOrderStatus(id: string, updateOrderStatusInput: UpdateOrderStatusDto): Promise<any> {
-    return this.orderStatusRepository.updateOne({ id } , {...updateOrderStatusInput}).exec();
+    return this.orderStatusRepository.findOne({ slug });
   }
 
   removeOrderStatus(id: string) {
-    console.log(id)
     return this.orderStatusRepository.remove({ id }).exec();
   }
 }
