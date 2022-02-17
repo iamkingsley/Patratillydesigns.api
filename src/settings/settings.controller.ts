@@ -5,7 +5,6 @@ import {
   Body,
   Put,
   Param,
-  Delete,
 } from '@nestjs/common';
 import { SettingsService } from './settings.service';
 import { CreateSettingDto } from './dto/create-setting.dto';
@@ -23,5 +22,10 @@ export class SettingsController {
   @Get()
   findAll() {
     return this.settingsService.findAll();
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateSettingDto: UpdateSettingDto) {
+    return this.settingsService.update(id, updateSettingDto);
   }
 }

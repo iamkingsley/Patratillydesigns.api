@@ -25,3 +25,5 @@ export const COUPON = 'COUPON';
 export const COUPON_MODEL = 'COUPON_MODEL';
 export const SHIPPING = 'SHIPPING';
 export const SHIPPING_MODEL = 'SHIPPING_MODEL';
+export const SETTINGS = 'SETTINGS';
+export const SETTINGS_MODEL = 'SETTINGS_MODEL';
