@@ -23,3 +23,5 @@ export const USER = 'USER';
 export const USER_MODEL = 'USER_MODEL';
 export const COUPON = 'COUPON';
 export const COUPON_MODEL = 'COUPON_MODEL';
+export const SHIPPING = 'SHIPPING';
+export const SHIPPING_MODEL = 'SHIPPING_MODEL';
