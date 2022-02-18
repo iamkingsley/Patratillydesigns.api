@@ -12,6 +12,8 @@ import { DatabaseModule } from 'src/database/database.module';
   providers: [
     OrdersService,
   ...ordersProviders,
-  ...orderStatusProviders],
+  ...orderStatusProviders
+  ],
+  exports: [OrdersService]
 })
 export class OrdersModule {}

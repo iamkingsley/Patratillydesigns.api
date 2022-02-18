@@ -62,6 +62,7 @@ export class OrdersService {
       .populate('products')
       .populate('billing_address')
       .populate('shipping_address')
+      .sort({ created_at: -1 })
       .exec();
 
     if (shop_id && shop_id !== 'undefined') {
@@ -73,6 +74,24 @@ export class OrdersService {
       data: results,
       ...paginate(orders.length, page, limit, results.length, url),
     };
+  }
+
+  getRecentOrders() {
+    return this.ordersRepository.find({
+      created_at: {
+        $lte: new Date((new Date().getTime() - (30 * 24 * 60 * 60 * 1000)))
+      }
+    })
+    .exec()
+  }
+
+  getTodaysOrders() {
+    return this.ordersRepository.find({
+      created_at: {
+        $lte: new Date((new Date().getTime() - (24 * 60 * 60 * 1000)))
+      }
+    })
+    .exec()
   }
 
   getOrderById(id: string) {
@@ -114,7 +133,7 @@ export class OrdersService {
       wallet_amount: 0,
     };
   }
-
+  
   /**
    * ORDER STATUS SERVICES
    */
