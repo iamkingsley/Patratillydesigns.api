@@ -30,7 +30,7 @@ export class TagsService {
 
   async findAll({ page, limit }: GetTagsDto) {
     if (!page) page = 1;
-    const tags = await this.tagsRepository.find().exec();
+    const tags = await this.tagsRepository.find().sort({ created_at: -1 }).exec();
     const url = `/tags?limit=${limit}`;
     return {
       data: tags,

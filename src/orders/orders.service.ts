@@ -80,8 +80,9 @@ export class OrdersService {
     return this.ordersRepository.find({
       created_at: {
         $lte: new Date((new Date().getTime() - (30 * 24 * 60 * 60 * 1000)))
-      }
+      },
     })
+    .sort({ created_at: -1 })
     .exec()
   }
 

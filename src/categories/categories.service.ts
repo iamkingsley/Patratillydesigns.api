@@ -62,6 +62,7 @@ export class CategoriesService {
       .find({ parent: null }) // shop navigation fix
       .populate('children')
       .populate('image')
+      .sort({ created_at: -1 })
       .exec();
 
     const fuse = new Fuse(data, options);
@@ -93,7 +94,10 @@ export class CategoriesService {
 
   async getCategory(slug: string) {
     const category = await this.categoriesRepository
-    .findOne({slug}).populate('parent').exec();
+    .findOne({slug})
+    .populate('image')
+    .populate('parent')
+    .exec();
     return category;
   }
 
@@ -137,6 +141,10 @@ export class CategoriesService {
         { slug },
         {
           ...updateCategoryDto,
+          image: updateCategoryDto.image? {
+            ...updateCategoryDto.image,
+            _id: new mongoose.Types.ObjectId(updateCategoryDto.image._id)
+          }: undefined,
           updated_at: Date()
         }
       ).exec();

@@ -21,12 +21,14 @@ export const VariationSchema = new mongoose.Schema({
 })
 
 export const ProductSchema = new mongoose.Schema({
+  id: String,
   name: String,
   slug: String,
-  type: {
-    type: mongoose.Types.ObjectId,
-    ref: 'TYPE'
-  },
+  // type: Object,
+  // type: {
+  //   type: mongoose.Types.ObjectId,
+  //   ref: 'TYPE'
+  // },
   type_id: Number,
   product_type: String, // ProductType,
   categories: [{
@@ -92,4 +94,6 @@ export const ProductSchema = new mongoose.Schema({
   price: { type: Number, required: false },
   quantity: Number,
   unit: String,
+  created_at: Date,
+  updated_at: Date,
 });

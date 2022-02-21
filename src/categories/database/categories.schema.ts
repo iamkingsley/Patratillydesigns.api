@@ -25,10 +25,10 @@ export const CategorySchema = new mongoose.Schema({
     required: false
   },
   icon: String,
-  type: {
-    type: mongoose.Types.ObjectId,
-    ref: 'TypeSchema'
-  },
+  // type: {
+  //   type: mongoose.Types.ObjectId,
+  //   ref: 'TypeSchema'
+  // },
   products: [{
     type: mongoose.Types.ObjectId,
     ref: PRODUCT,

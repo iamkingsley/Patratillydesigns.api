@@ -77,6 +77,7 @@ export class ProductsService {
       .populate('tags')
       .populate('categories')
       .populate('image')
+      .sort({ created_at: -1 })
       .exec();
     const fuse = new Fuse(data, options);
 
@@ -104,6 +105,7 @@ export class ProductsService {
       .find()
       .populate('tags')
       .populate('categories')
+      .populate('image')
       .exec();
 
     const product = products.find((p) => p?.slug === slug);
@@ -128,6 +130,10 @@ export class ProductsService {
       { id },
       {
         ...updateProductDto,
+        image: updateProductDto?.image? {
+          ...updateProductDto?.image,
+          _id: new mongoose.Types.ObjectId(updateProductDto.image._id)
+        }: undefined,
         updated_at: Date()
       }
     ).exec();
