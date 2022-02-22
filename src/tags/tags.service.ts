@@ -1,6 +1,6 @@
 import { v4 } from 'uuid';
 import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import mongoose , { Model } from 'mongoose';
 import slugify from 'slugify';
 import { TAG_MODEL } from 'src/common/constants';
 import { paginate } from 'src/common/pagination/paginate';
@@ -9,7 +9,6 @@ import { GetTagsDto } from './dto/get-tags.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { Tag } from './entities/tag.entity';
 import { slugOptions } from 'src/common/utils/slug-options';
-
 @Injectable()
 export class TagsService {
 
@@ -17,9 +16,15 @@ export class TagsService {
 
   async create(createTagDto: CreateTagDto) {
     // createTagDto.image = undefined;
+    const { image } = createTagDto;
+
     const tag = {
       id: v4(),
       ...createTagDto,
+      image: {
+        ...image,
+        _id: new mongoose.Types.ObjectId(image?._id)
+      },
       slug: slugify(createTagDto.name, slugOptions),
       created_at: new Date(),
       updated_at: new Date(),
@@ -39,7 +44,7 @@ export class TagsService {
   }
 
   async findOne(id: string) {
-    return await this.tagsRepository.findOne({ id }).exec();
+    return await this.tagsRepository.findOne({ id }).populate('image').exec();
   }
 
   async update(id: string, updateTagDto: UpdateTagDto): Promise<any>{

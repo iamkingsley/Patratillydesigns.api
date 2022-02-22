@@ -1,4 +1,4 @@
-import { PRODUCT } from './../../common/constants';
+import { ATTACHMENT, PRODUCT } from './../../common/constants';
 import mongoose from 'mongoose';
 
 export const TagSchema = new mongoose.Schema({
@@ -9,12 +9,13 @@ export const TagSchema = new mongoose.Schema({
   details: String,
   image: {
     type: mongoose.Types.ObjectId,
-    ref: 'ATTACHMENT'
+    ref: ATTACHMENT,
+    required: false,
   },
   icon: String,
   type: {
     type: mongoose.Types.ObjectId,
-    ref: 'TYPE'
+    ref: 'TypeSchema',
   },
   products: [{
     type: mongoose.Types.ObjectId,
