@@ -125,9 +125,8 @@ export class ProductsService {
   }
   
   async update(id: string, updateProductDto: UpdateProductDto): Promise<any> {
-    console.log('/products/update ', updateProductDto)
     return this.productModel.updateOne(
-      { id },
+      { slug: id },
       {
         ...updateProductDto,
         image: updateProductDto?.image? {

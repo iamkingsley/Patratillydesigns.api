@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { v4 } from 'uuid';
 import orderNo from 'order-no';
 import { Inject, Injectable } from '@nestjs/common';
@@ -37,6 +37,10 @@ export class OrdersService {
     const newOrder = {
       id: orderNum,
       tracking_number: orderNum,
+      customer: {
+        ...createOrderInput,
+        _id: new mongoose.Types.ObjectId(createOrderInput.customer?._id),
+      },
       ...createOrderInput,
       created_at: new Date(),
       updated_at: new Date(),
@@ -62,6 +66,7 @@ export class OrdersService {
       .populate('products')
       .populate('billing_address')
       .populate('shipping_address')
+      .populate('customer')
       .sort({ created_at: -1 })
       .exec();
 
@@ -82,6 +87,7 @@ export class OrdersService {
         $lte: new Date((new Date().getTime() - (30 * 24 * 60 * 60 * 1000)))
       },
     })
+    .populate('customer')
     .sort({ created_at: -1 })
     .exec()
   }
@@ -100,11 +106,15 @@ export class OrdersService {
       .findOne({ id })
       .populate('billing_address')
       .populate('shipping_address')
+      .populate('customer')
       .exec();
   }
 
   async getOrderByTrackingNumber(tracking_number: string): Promise<Order> {
-    const parentOrder = await this.ordersRepository.findOne({ tracking_number });
+    const parentOrder = await this.ordersRepository
+    .findOne({ tracking_number })
+    .populate('customer');
+
     if (!parentOrder) {
       return null; // or NotFound
     }
