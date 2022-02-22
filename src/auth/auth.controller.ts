@@ -14,10 +14,13 @@ import {
   VerifyOtpDto,
 } from './dto/create-auth.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { MailService } from 'src/mail/mail.service';
 
 @Controller()
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private mailService: MailService) {}
 
   @Post('register')
   createAccount(@Body() registerDto: RegisterDto) {
@@ -91,9 +94,23 @@ export class AuthController {
   @Post('contact-us')
   async contactUs(@Body() input: any) {
     await this.authService.contactUs(input);
+
+    await this.mail(input)
+
     return {
       success: true,
       message: 'Thank you for contacting us. We will get back to you soon.',
     };
+  }
+  async mail({ name, email, subject, description}){
+      const mail = {
+        to: 'realbenneh@gmail.com',
+        subject: subject,
+        from: email,
+        text: description,
+        html: '<h1>Hello</h1>',
+      };
+      
+      return await this.mailService.send(mail);
   }
 }
