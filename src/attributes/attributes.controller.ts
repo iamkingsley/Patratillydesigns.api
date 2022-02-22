@@ -16,8 +16,8 @@ export class AttributesController {
   constructor(private readonly attributesService: AttributesService) {}
 
   @Post()
-  create(@Body() createAttributeDto: CreateAttributeDto) {
-    return this.attributesService.create(createAttributeDto);
+  create(@Body() input) {
+    return this.attributesService.create(input);
   }
 
   @Get()

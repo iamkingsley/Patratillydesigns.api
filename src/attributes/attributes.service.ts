@@ -3,13 +3,15 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateAttributeDto } from './dto/create-attribute.dto';
 import { UpdateAttributeDto } from './dto/update-attribute.dto';
 import { Attribute } from './entities/attribute.entity';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { ATTRIBUTE_MODEL } from 'src/common/constants';
 
 @Injectable()
 export class AttributesService {
   constructor(@Inject(ATTRIBUTE_MODEL) private attributeRepository: Model<Attribute>) {}
   async create(createAttributeDto: CreateAttributeDto) {
+    
+     const { values } = createAttributeDto
     const attr = {
       id: v4(),
       ...createAttributeDto,
