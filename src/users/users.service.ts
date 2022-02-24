@@ -55,14 +55,18 @@ export class UsersService {
       .populate('address').exec();
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.userRepository.findOneAndUpdate(
+  async update(id: string, updateUserDto) {
+    await this.userRepository.findOneAndUpdate(
       { id },
       {
-        ...updateUserDto,
+        ...updateUserDto?.input,
         updated_at: Date()
       }
     ).exec();
+    return {
+      success: true,
+      message: 'Updated successfully!'
+    }
   }
 
   async remove(id: string): Promise<any> {

@@ -43,6 +43,7 @@ export const UserSchema = new mongoose.Schema({
     ref: ORDER,
     required: false
   }],
+  measurement: Object,
   created_at: Date,
   updated_at: Date,
 })
