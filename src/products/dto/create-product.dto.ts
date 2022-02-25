@@ -13,7 +13,8 @@ export class CreateProductDto extends OmitType(Product, [
   'tags',
   'type',
   'related_products',
-  // 'variation_options',
+  'is_featured',
+  'variation_options',
 ]) {
   categories: number[];
   tags: number[];

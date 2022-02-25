@@ -54,11 +54,7 @@ export const ProductSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     required: false
   }, 
-  orders: [{
-    type: mongoose.Types.ObjectId,
-    ref: ORDER,
-    required: false 
-  }], 
+  orders: [], 
   shop: {
     type: mongoose.Types.ObjectId,
     ref: 'SHOP',
@@ -73,6 +69,7 @@ export const ProductSchema = new mongoose.Schema({
   description: String,
   in_stock: Boolean,
   is_taxable: Boolean,
+  is_featured: Boolean,
   sale_price: { type: Number, required: false }, 
   max_price: { type: Number, required: false }, 
   min_price: { type: Number, required: false }, 

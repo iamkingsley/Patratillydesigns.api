@@ -1,3 +1,4 @@
+import { PaginationArgs } from './../common/dto/pagination-args.dto';
 import { TAG_MODEL, CATEGORY_MODEL } from './../common/constants';
 import { v4 } from 'uuid';
 import slugify from 'slugify';
@@ -120,8 +121,19 @@ export class ProductsService {
   }
 
   async getPopularProducts({ shop_id, limit }: GetPopularProductsDto): Promise<Product[]> {
-    const products = await this.productModel.find().exec();
-    return products?.slice(0, limit);
+    return await this.productModel
+    .find()
+    .populate('image')
+    .limit(limit)
+    .exec();
+  }
+
+  async getFeaturedProducts({ limit }: PaginationArgs): Promise<Product[]> {
+    return await this.productModel
+      .find({ is_featured: true })
+      .populate('image')
+      .limit(limit)
+      .exec();
   }
   
   async update(id: string, updateProductDto: UpdateProductDto): Promise<any> {

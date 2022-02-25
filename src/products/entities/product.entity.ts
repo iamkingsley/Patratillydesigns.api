@@ -28,13 +28,14 @@ export class Product extends CoreEntity {
   variations?: AttributeValue[];
   variation_options?: Variation[];
   pivot?: OrderProductPivot;
-  orders?: Order[];
+  orders?: any[];
   shop: Shop;
   shop_id: number;
   related_products?: Product[];
   description: string;
   in_stock: boolean;
   is_taxable: boolean;
+  is_featured: boolean;
   sale_price?: number;
   max_price?: number;
   min_price?: number;
