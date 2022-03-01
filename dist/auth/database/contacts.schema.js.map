@@ -1,0 +1,1 @@
+{"version":3,"file":"contacts.schema.js","sourceRoot":"","sources":["../../../src/auth/database/contacts.schema.ts"],"names":[],"mappings":";;;;;;AAAA,wDAAgC;AAEnB,QAAA,aAAa,GAAG,IAAI,kBAAQ,CAAC,MAAM,CAAC;IAC/C,IAAI,EAAE,MAAM;IACZ,KAAK,EAAE,MAAM;IACb,OAAO,EAAE,MAAM;IACf,WAAW,EAAE,MAAM;CACpB,CAAC,CAAA"}

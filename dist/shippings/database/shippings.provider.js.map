@@ -1,0 +1,1 @@
+{"version":3,"file":"shippings.provider.js","sourceRoot":"","sources":["../../../src/shippings/database/shippings.provider.ts"],"names":[],"mappings":";;;AAAA,sDAAkD;AAClD,sDAA2E;AAE3E,yDAAoD;AAEvC,QAAA,kBAAkB,GAAG;IAChC;QACE,OAAO,EAAE,0BAAc;QACvB,UAAU,EAAE,CAAC,UAAsB,EAAE,EAAE,CAAC,UAAU,CAAC,KAAK,CAAC,oBAAQ,EAAE,iCAAc,CAAC;QAClF,MAAM,EAAE,CAAC,+BAAmB,CAAC;KAC9B;CACF,CAAC"}

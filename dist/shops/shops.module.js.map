@@ -1,0 +1,1 @@
+{"version":3,"file":"shops.module.js","sourceRoot":"","sources":["../../src/shops/shops.module.ts"],"names":[],"mappings":";;;;;;;;;AAAA,2CAAwC;AACxC,mDAA+C;AAC/C,yDAAuE;AAMvE,IAAa,WAAW,GAAxB,MAAa,WAAW;CAAG,CAAA;AAAd,WAAW;IAJvB,IAAA,eAAM,EAAC;QACN,WAAW,EAAE,CAAC,kCAAe,EAAE,mCAAgB,CAAC;QAChD,SAAS,EAAE,CAAC,4BAAY,CAAC;KAC1B,CAAC;GACW,WAAW,CAAG;AAAd,kCAAW"}
