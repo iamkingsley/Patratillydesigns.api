@@ -8,14 +8,15 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
-    .setTitle('Marvel')
-    .setDescription('Marvel Mock API')
+    .setTitle('Patra Tilly')
+    .setDescription('Patra Tilly API')
     .setVersion('1.0')
-    .addTag('marvel')
+    .addTag('patra-tilly')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
   const PORT = process.env.PORT || 5000;
+  app.enableCors();
   await app.listen(PORT);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }

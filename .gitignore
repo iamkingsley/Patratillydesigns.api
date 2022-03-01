@@ -1,5 +1,5 @@
 # compiled output
-/dist
+/dist 
 /node_modules
 
 # Logs
@@ -12,6 +12,13 @@ lerna-debug.log*
 
 # OS
 .DS_Store
+
+# local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Tests
 /coverage
