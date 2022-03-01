@@ -22,8 +22,8 @@ import { AuthModule } from './auth/auth.module';
 import { RefundsModule } from './refunds/refunds.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { MailModule } from './mail/mail.module';
-import  Cloudinary  from 'cloudinary';
 import { ConfigModule } from '@nestjs/config';
+import { SmsModule } from './sms/sms.module';
 
 @Module({
   imports: [
@@ -49,7 +49,8 @@ import { ConfigModule } from '@nestjs/config';
     RefundsModule,
     CloudinaryModule,
     MailModule,
-    ConfigModule.forRoot(), 
+    ConfigModule.forRoot(),
+    SmsModule, 
   ],
   controllers: [],
   providers: [],

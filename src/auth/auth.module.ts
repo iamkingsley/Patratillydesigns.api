@@ -12,6 +12,8 @@ import { DatabaseModule } from 'src/database/database.module';
 import { MailModule } from 'src/mail/mail.module';
 import { MailService } from 'src/mail/mail.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { SmsModule } from 'src/sms/sms.module';
+import { SmsService } from 'src/sms/sms.service';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     UsersModule,
     MailModule,
     ConfigService,
+    SmsModule,
+    SmsService,
     ConfigModule.forRoot(),
     PassportModule.register({
       imports: [AuthModuleOptions],
@@ -36,6 +40,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     LocalStrategy,
     JwtStrategy,
     MailService,
+    SmsService
   ],
 })
 export class AuthModule {}
