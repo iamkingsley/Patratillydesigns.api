@@ -7,7 +7,8 @@ import { MailService } from './mail.service';
 // @Module({
   @Module({
     imports: [
-      ConfigService,  ConfigModule.forRoot(),
+      ConfigService, 
+      ConfigModule.forRoot(),
       MailerModule.forRoot({
         // transport: 'smtps://user@example.com:topsecret@smtp.example.com',
         // or
