@@ -74,7 +74,7 @@ export class ProductsService {
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     
-    let data = await this.productModel.find()
+    let data = await this.productModel.find({ status: "publish" })
       .populate('tags')
       .populate('categories')
       .populate('image')
