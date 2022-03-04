@@ -22,15 +22,20 @@ import { v4 as uuidv4 } from 'uuid';
 import { CONTACT_MODEL } from 'src/common/constants';
 import { Model } from 'mongoose';
 import { Contact } from './entities/contact.entity';
+import { SmsService } from 'src/sms/sms.service';
+import otpGenerator from 'otp-generator';
+
 @Injectable()
 export class AuthService {
+  otpData: string;
 
   constructor(
     @Inject(CONTACT_MODEL) private contactsRepository: Model<Contact>,
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private sms: SmsService,
     ) {}
-
+    
   async register(createUserInput: RegisterDto): Promise<AuthResponse> {
     const hashedPassword = await bcrypt.hash(createUserInput.password, 10);
     const newUser = {
@@ -128,21 +133,30 @@ export class AuthService {
   }
 
   async verifyOtpCode(verifyOtpInput: VerifyOtpDto): Promise<CoreResponse> {
-    console.log(verifyOtpInput);
-    return {
-      message: 'success',
-      success: true,
-    };
+    const { code } = verifyOtpInput
+    if(code === this.otpData ){
+      return {
+        message: 'success',
+        success: true,
+      };
+    }else {
+      return {
+        message: 'Wrong token number',
+        success: false
+      }
+    }
   }
   
   async sendOtpCode(otpInput: OtpDto): Promise<OtpResponse> {
-    console.log(otpInput);
+    const otp = otpGenerator.generate(6, {upperCaseAlphabets: false, specialChars: false});
+    this.otpData = otp
+    await this.sms.sendSMS(otpInput.phone_number, otp);
     return {
       message: 'success',
       success: true,
       id: '1',
       provider: 'google',
-      phone_number: '+919494949494',
+      phone_number: otpInput.phone_number,
       is_contact_exist: true,
     };
   }

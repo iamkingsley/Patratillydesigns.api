@@ -3,11 +3,14 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthResponse, ChangePasswordDto, ForgetPasswordDto, LoginDto, CoreResponse, RegisterDto, ResetPasswordDto, VerifyForgetPasswordDto, SocialLoginDto, OtpLoginDto, OtpResponse, VerifyOtpDto, OtpDto } from './dto/create-auth.dto';
 import { Model } from 'mongoose';
 import { Contact } from './entities/contact.entity';
+import { SmsService } from 'src/sms/sms.service';
 export declare class AuthService {
     private contactsRepository;
     private usersService;
     private jwtService;
-    constructor(contactsRepository: Model<Contact>, usersService: UsersService, jwtService: JwtService);
+    private sms;
+    otpData: string;
+    constructor(contactsRepository: Model<Contact>, usersService: UsersService, jwtService: JwtService, sms: SmsService);
     register(createUserInput: RegisterDto): Promise<AuthResponse>;
     login(loginInput: LoginDto): Promise<AuthResponse>;
     changePassword(changePasswordInput: ChangePasswordDto): Promise<CoreResponse>;

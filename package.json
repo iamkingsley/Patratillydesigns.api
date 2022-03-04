@@ -36,6 +36,7 @@
     "@sendgrid/mail": "^7.6.1",
     "@types/mongodb": "^4.0.7",
     "@types/nodemailer": "^6.4.4",
+    "@types/otp-generator": "^4.0.0",
     "bcrypt": "^5.0.1",
     "buffer-to-stream": "^1.0.0",
     "class-transformer": "^0.4.0",
@@ -47,6 +48,7 @@
     "mongoose-extend-schema": "^1.0.0",
     "nodemailer": "^6.7.2",
     "order-no": "^1.0.3",
+    "otp-generator": "^4.0.0",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
@@ -55,6 +57,7 @@
     "rxjs": "^7.4.0",
     "slugify": "^1.6.5",
     "swagger-ui-express": "^4.1.6",
+    "twilio": "^3.75.0",
     "typeorm": "^0.2.41"
   },
   "devDependencies": {

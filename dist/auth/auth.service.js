@@ -35,11 +35,14 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const uuid_1 = require("uuid");
 const constants_1 = require("../common/constants");
 const mongoose_1 = require("mongoose");
+const sms_service_1 = require("../sms/sms.service");
+const otp_generator_1 = __importDefault(require("otp-generator"));
 let AuthService = class AuthService {
-    constructor(contactsRepository, usersService, jwtService) {
+    constructor(contactsRepository, usersService, jwtService, sms) {
         this.contactsRepository = contactsRepository;
         this.usersService = usersService;
         this.jwtService = jwtService;
+        this.sms = sms;
     }
     async register(createUserInput) {
         const hashedPassword = await bcrypt_1.default.hash(createUserInput.password, 10);
@@ -109,20 +112,30 @@ let AuthService = class AuthService {
         };
     }
     async verifyOtpCode(verifyOtpInput) {
-        console.log(verifyOtpInput);
-        return {
-            message: 'success',
-            success: true,
-        };
+        const { code } = verifyOtpInput;
+        if (code === this.otpData) {
+            return {
+                message: 'success',
+                success: true,
+            };
+        }
+        else {
+            return {
+                message: 'Wrong token number',
+                success: false
+            };
+        }
     }
     async sendOtpCode(otpInput) {
-        console.log(otpInput);
+        const otp = otp_generator_1.default.generate(6, { upperCaseAlphabets: false, specialChars: false });
+        this.otpData = otp;
+        await this.sms.sendSMS(otpInput.phone_number, otp);
         return {
             message: 'success',
             success: true,
             id: '1',
             provider: 'google',
-            phone_number: '+919494949494',
+            phone_number: otpInput.phone_number,
             is_contact_exist: true,
         };
     }
@@ -139,7 +152,8 @@ AuthService = __decorate([
     __param(0, (0, common_1.Inject)(constants_1.CONTACT_MODEL)),
     __metadata("design:paramtypes", [mongoose_1.Model,
         users_service_1.UsersService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        sms_service_1.SmsService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

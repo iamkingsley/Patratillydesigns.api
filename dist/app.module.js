@@ -31,6 +31,7 @@ const refunds_module_1 = require("./refunds/refunds.module");
 const cloudinary_module_1 = require("./cloudinary/cloudinary.module");
 const mail_module_1 = require("./mail/mail.module");
 const config_1 = require("@nestjs/config");
+const sms_module_1 = require("./sms/sms.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -59,6 +60,7 @@ AppModule = __decorate([
             cloudinary_module_1.CloudinaryModule,
             mail_module_1.MailModule,
             config_1.ConfigModule.forRoot(),
+            sms_module_1.SmsModule,
         ],
         controllers: [],
         providers: [],

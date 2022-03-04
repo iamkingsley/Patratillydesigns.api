@@ -21,6 +21,8 @@ const database_module_1 = require("../database/database.module");
 const mail_module_1 = require("../mail/mail.module");
 const mail_service_1 = require("../mail/mail.service");
 const config_1 = require("@nestjs/config");
+const sms_module_1 = require("../sms/sms.module");
+const sms_service_1 = require("../sms/sms.service");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -30,6 +32,8 @@ AuthModule = __decorate([
             users_module_1.UsersModule,
             mail_module_1.MailModule,
             config_1.ConfigService,
+            sms_module_1.SmsModule,
+            sms_service_1.SmsService,
             config_1.ConfigModule.forRoot(),
             passport_1.PassportModule.register({
                 imports: [passport_1.AuthModuleOptions],
@@ -47,6 +51,7 @@ AuthModule = __decorate([
             local_strategy_1.LocalStrategy,
             jwt_strategy_1.JwtStrategy,
             mail_service_1.MailService,
+            sms_service_1.SmsService
         ],
     })
 ], AuthModule);

@@ -198,7 +198,7 @@
         "name": "Clothing",
         "settings": {
             "isHome": true,
-            "layoutType": "modern",
+            "layoutType": "minimal",
             "productCard": "xenon"
         },
         "slug": "clothing",
