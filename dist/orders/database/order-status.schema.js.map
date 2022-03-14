@@ -1,1 +1,0 @@
-{"version":3,"file":"order-status.schema.js","sourceRoot":"","sources":["../../../src/orders/database/order-status.schema.ts"],"names":[],"mappings":";;;;;;AAAA,wDAAgC;AAEnB,QAAA,iBAAiB,GAAG,IAAI,kBAAQ,CAAC,MAAM,CAAC;IACjD,EAAE,EAAE,MAAM;IACV,UAAU,EAAE,IAAI;IAChB,UAAU,EAAE,IAAI;IAChB,IAAI,EAAE,MAAM;IACZ,KAAK,EAAE,MAAM;IACb,MAAM,EAAE,MAAM;CACf,CAAC,CAAA"}

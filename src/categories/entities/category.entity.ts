@@ -15,4 +15,5 @@ export class Category extends CoreEntity {
   icon?: string;
   type?: Type;
   products?: Product[];
+  is_featured?: boolean;
 }

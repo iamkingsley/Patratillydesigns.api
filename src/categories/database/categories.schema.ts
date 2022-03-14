@@ -8,6 +8,7 @@ export const CategorySchema = new mongoose.Schema({
   updated_at: Date,
   name: String,
   slug: String,
+  is_featured: Boolean,
   parent_id: String, // uuid
   parent: {
     type: mongoose.Types.ObjectId,

@@ -10,4 +10,5 @@ export class CreateCategoryDto extends PickType(Category, [
   'type_id',
   'icon',
   'image',
+  'is_featured'
 ]) {}

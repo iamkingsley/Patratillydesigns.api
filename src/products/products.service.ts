@@ -145,6 +145,7 @@ export class ProductsService {
           ...updateProductDto?.image,
           _id: new mongoose.Types.ObjectId(updateProductDto.image._id)
         }: undefined,
+        slug: slugify(updateProductDto.name, slugOptions),
         updated_at: Date()
       }
     ).exec();

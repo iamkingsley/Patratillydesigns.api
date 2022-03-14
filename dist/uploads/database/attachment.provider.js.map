@@ -1,1 +1,0 @@
-{"version":3,"file":"attachment.provider.js","sourceRoot":"","sources":["../../../src/uploads/database/attachment.provider.ts"],"names":[],"mappings":";;;AAAA,sDAAoD;AACpD,sDAA4E;AAE5E,6EAAuE;AAE1D,QAAA,mBAAmB,GAAG;IACjC;QACE,OAAO,EAAE,2BAAe;QACxB,UAAU,EAAE,CAAC,UAAsB,EAAE,EAAE,CAAC,UAAU,CAAC,KAAK,CAAC,sBAAU,EAAE,oCAAgB,CAAC;QACtF,MAAM,EAAE,CAAC,+BAAmB,CAAC;KAC9B;CACF,CAAC"}

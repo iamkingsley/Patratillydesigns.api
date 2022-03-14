@@ -18,7 +18,7 @@ const options = {
 };
 @Injectable()
 export class CategoriesService {
-
+  
   constructor(
     @Inject(CATEGORY_MODEL) private categoriesRepository: Model<Category>,
     ) {}
@@ -30,7 +30,7 @@ export class CategoriesService {
       ...createCategoryDto,
       image: {
         ...image,
-        _id: new mongoose.Types.ObjectId(image?._id)
+        _id: new mongoose.Types.ObjectId(image._id)
       },
       slug: slugify(name, slugOptions),
       created_at: new Date(),
@@ -38,11 +38,11 @@ export class CategoriesService {
     }
     
     const category = new this.categoriesRepository(cat);
+    const catDoc = await category.save()
 
     const parentCat = await this.categoriesRepository
         .findById(new mongoose.Types.ObjectId(parent));
 
-    const catDoc = await category.save()
     catDoc.parent = parentCat;
 
     if (parent) {
@@ -92,6 +92,16 @@ export class CategoriesService {
     };
   }
 
+  async getFeaturedCategories(query: GetCategoriesDto) {
+    let data: Category[] = await this.categoriesRepository
+    .find({ is_featured: true })
+    .populate('image')
+    .sort({ created_at: -1 })
+    .limit(Number(query.limit))
+    .exec();
+    return { data };
+  }
+
   async getCategory(slug: string) {
     const category = await this.categoriesRepository
     .findOne({slug})
@@ -102,11 +112,11 @@ export class CategoriesService {
   }
 
   async update(slug: string, updateCategoryDto: UpdateCategoryDto): Promise<any> {
-    const categoryDoc = await this.categoriesRepository.findOne({ slug }).exec();
+    let categoryDoc = await this.categoriesRepository.findOne({ slug }).exec();
     if (
       updateCategoryDto?.parent_id &&
       updateCategoryDto?.parent_id !== categoryDoc.parent_id
-    ) {
+      ) {
       // remove child from it's original parent
       const originalParentDoc = await this.categoriesRepository
       .findOne({ id: categoryDoc.parent_id})
@@ -122,29 +132,34 @@ export class CategoriesService {
       const newParentDoc
         = await this.categoriesRepository.findOne({ id: updateCategoryDto.parent_id}).exec();
       
-        // update child also
-      categoryDoc.parent = newParentDoc;
-      categoryDoc.parent_id = newParentDoc.id;
-      categoryDoc.type_id = updateCategoryDto.type_id;
-      categoryDoc.name = updateCategoryDto.name;
-      categoryDoc.icon = updateCategoryDto.icon;
-      
-      categoryDoc.save()
-
-      // assign child a new parent
+      // assign child to new parent
       newParentDoc.children.push(categoryDoc);
       newParentDoc.save();
-      
-      return categoryDoc;
+
+      // update child also
+      return this.categoriesRepository.updateOne(
+        { slug },
+        {
+          ...updateCategoryDto,
+          parent: newParentDoc,
+          slug: slugify(updateCategoryDto.name, slugOptions),
+          image: updateCategoryDto.image ? {
+            ...updateCategoryDto.image,
+            _id: new mongoose.Types.ObjectId(updateCategoryDto.image._id)
+          } : undefined,
+          updated_at: Date()
+        }
+      ).exec();
     } else {
       return this.categoriesRepository.updateOne(
         { slug },
         {
           ...updateCategoryDto,
-          image: updateCategoryDto.image? {
+          slug: slugify(updateCategoryDto.name, slugOptions),
+          image: updateCategoryDto.image ? {
             ...updateCategoryDto.image,
             _id: new mongoose.Types.ObjectId(updateCategoryDto.image._id)
-          }: undefined,
+          } : undefined,
           updated_at: Date()
         }
       ).exec();

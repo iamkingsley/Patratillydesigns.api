@@ -22,22 +22,19 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-//   @Post('upload')
-//   @UseInterceptors(FileInterceptor('file'))
-//   uploadFile(@UploadedFile() file: Express.Multer.File) {
-//     console.log("upload:")
-
-//   // console.log("file: ",file);
-// }
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
-    // console.log("h9t:")
     return this.categoriesService.create(createCategoryDto);
   }
 
   @Get()
   findAll(@Query() query: GetCategoriesDto) {
     return this.categoriesService.getCategories(query);
+  }
+
+  @Get('featured-categories')
+  getFeaturedCategories(@Query() query: GetCategoriesDto) {
+    return this.categoriesService.getFeaturedCategories(query);
   }
 
   @Get(':slug')
@@ -50,7 +47,6 @@ export class CategoriesController {
     @Param('slug') slug: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    // console.log('update ', slug)
     return this.categoriesService.update(slug, updateCategoryDto);
   }
 

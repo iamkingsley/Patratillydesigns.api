@@ -1,1 +1,0 @@
-{"version":3,"file":"attributes.schema.js","sourceRoot":"","sources":["../../../src/attributes/database/attributes.schema.ts"],"names":[],"mappings":";;;;;;AAAA,wDAAgC;AAEnB,QAAA,eAAe,GAAG,IAAI,kBAAQ,CAAC,MAAM,CAAC;IAC/C,EAAE,EAAE,MAAM;IACV,IAAI,EAAE,MAAM;IAMZ,IAAI,EAAE,MAAM;IACZ,MAAM,EAAE,EAAE;IACV,UAAU,EAAE,IAAI;IAChB,UAAU,EAAE,IAAI;CACnB,CAAC,CAAA"}
