@@ -30,7 +30,7 @@ export class ProductsService {
   ) {}
   
   async create(createProductDto: CreateProductDto) {
-    const { name, categories, tags, image } = createProductDto;
+    const { name, categories, tags, image, gallery } = createProductDto;
     const prod = {
       id: v4(),
       ...createProductDto,
@@ -38,6 +38,12 @@ export class ProductsService {
         ...image,
         _id: new mongoose.Types.ObjectId(image._id)
       },
+      gallery: gallery.map((img) => {
+        return {
+          ...img,
+          _id: new mongoose.Types.ObjectId(img._id)
+        }
+      }),
       slug: slugify(name, slugOptions),
       created_at: new Date(),
       updated_at: new Date()
@@ -78,6 +84,7 @@ export class ProductsService {
       .populate('tags')
       .populate('categories')
       .populate('image')
+      .populate('gallery')
       .sort({ created_at: -1 })
       .exec();
     const fuse = new Fuse(data, options);
@@ -132,20 +139,28 @@ export class ProductsService {
     return await this.productModel
       .find({ is_featured: true })
       .populate('image')
+      .populate('gallery')
       .limit(limit)
       .exec();
   }
   
   async update(id: string, updateProductDto: UpdateProductDto): Promise<any> {
+    const {name, image, gallery } = updateProductDto;
     return this.productModel.updateOne(
       { slug: id },
       {
         ...updateProductDto,
-        image: updateProductDto?.image? {
-          ...updateProductDto?.image,
-          _id: new mongoose.Types.ObjectId(updateProductDto.image._id)
+        image: image ? {
+          ...image,
+          _id: new mongoose.Types.ObjectId(image._id)
         }: undefined,
-        slug: slugify(updateProductDto.name, slugOptions),
+        gallery: gallery ? gallery.map((img) => {
+          return {
+            ...img,
+            _id: new mongoose.Types.ObjectId(img._id)
+          }
+        }): undefined,
+        slug: slugify(name, slugOptions),
         updated_at: Date()
       }
     ).exec();
