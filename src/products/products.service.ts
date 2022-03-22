@@ -85,6 +85,8 @@ export class ProductsService {
       .populate('categories')
       .populate('image')
       .populate('gallery')
+      .populate('variations')
+      .populate('variation_options')
       .sort({ created_at: -1 })
       .exec();
     const fuse = new Fuse(data, options);
@@ -114,6 +116,9 @@ export class ProductsService {
       .populate('tags')
       .populate('categories')
       .populate('image')
+      .populate('gallery')
+      .populate('variations')
+      .populate('variation_options')
       .exec();
 
     const product = products.find((p) => p?.slug === slug);
@@ -138,8 +143,12 @@ export class ProductsService {
   async getFeaturedProducts({ limit }: PaginationArgs): Promise<Product[]> {
     return await this.productModel
       .find({ is_featured: true })
+      .populate('tags')
+      .populate('categories')
       .populate('image')
       .populate('gallery')
+      .populate('variations')
+      .populate('variation_options')
       .limit(limit)
       .exec();
   }

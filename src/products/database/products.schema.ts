@@ -40,20 +40,9 @@ export const ProductSchema = new mongoose.Schema({
     ref: TAG,
     required: false,
   }],
-  variations: [{
-    type: mongoose.Types.ObjectId,
-    // ref: 'AttributeValueSchema',
-    required: false
-  }],
-  variation_options: [{
-    type: mongoose.Types.ObjectId,
-    // ref: 'VariationSchema',
-    required: false
-  }],
-  pivot: {
-    type: mongoose.Types.ObjectId,
-    required: false
-  }, 
+  variations: [],
+  variation_options: [],
+  pivot: Object, 
   orders: [], 
   shop: {
     type: mongoose.Types.ObjectId,
