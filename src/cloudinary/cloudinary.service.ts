@@ -23,4 +23,16 @@ export class CloudinaryService {
     // toReadableStream(file[4].buffer).pipe(upload);
     });
   }
+
+  async getAllImages(){
+    
+     const upload = v2.url('sample', {format: 'json', type: 'list', sign_url: true})
+     console.log("image", upload)
+    //  return upload
+    //   console.log("gggggggg", file[0].buffer)
+      // toStream(file[0].buffer).pipe(upload);
+    // toReadableStream(file[4].buffer).pipe(upload);
+  }
+
+
 }

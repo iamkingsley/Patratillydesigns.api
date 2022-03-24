@@ -24,6 +24,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { MailModule } from './mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 import { SmsModule } from './sms/sms.module';
+import { FileManagerModule } from './file-manager/file-manager.module';
 
 @Module({
   imports: [
@@ -50,7 +51,8 @@ import { SmsModule } from './sms/sms.module';
     CloudinaryModule,
     MailModule,
     ConfigModule.forRoot(),
-    SmsModule, 
+    SmsModule,
+    FileManagerModule, 
   ],
   controllers: [],
   providers: [],
