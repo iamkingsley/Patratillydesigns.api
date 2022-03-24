@@ -52,14 +52,16 @@ export class UsersService {
   findOne(id: string) {
     return this.userRepository
       .findById(new mongoose.Types.ObjectId(id))
-      .populate('address').exec();
+      .populate('address')
+      .populate('profile.avatar')
+      .exec();
   }
 
   async update(id: string, updateUserDto) {
     await this.userRepository.findOneAndUpdate(
       { id },
       {
-        ...updateUserDto?.input,
+        ...updateUserDto,
         updated_at: Date()
       }
     ).exec();

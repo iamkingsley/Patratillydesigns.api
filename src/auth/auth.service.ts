@@ -75,7 +75,6 @@ export class AuthService {
   async changePassword(
     changePasswordInput: ChangePasswordDto,
   ): Promise<CoreResponse> {
-    console.log(changePasswordInput);
 
     return {
       success: true,
@@ -86,7 +85,6 @@ export class AuthService {
   async forgetPassword(
     forgetPasswordInput: ForgetPasswordDto,
   ): Promise<CoreResponse> {
-    console.log(forgetPasswordInput);
 
     return {
       success: true,
@@ -97,7 +95,6 @@ export class AuthService {
   async verifyForgetPasswordToken(
     verifyForgetPasswordTokenInput: VerifyForgetPasswordDto,
   ): Promise<CoreResponse> {
-    console.log(verifyForgetPasswordTokenInput);
 
     return {
       success: true,
@@ -108,7 +105,6 @@ export class AuthService {
   async resetPassword(
     resetPasswordInput: ResetPasswordDto,
   ): Promise<CoreResponse> {
-    console.log(resetPasswordInput);
 
     return {
       success: true,
@@ -117,7 +113,6 @@ export class AuthService {
   }
 
   async socialLogin(socialLoginDto: SocialLoginDto): Promise<AuthResponse> {
-    console.log(socialLoginDto);
     return {
       token: 'jwt token',
       permissions: ['super_admin', 'customer'],
@@ -125,7 +120,6 @@ export class AuthService {
   }
 
   async otpLogin(otpLoginDto: OtpLoginDto): Promise<AuthResponse> {
-    console.log(otpLoginDto);
     return {
       token: 'jwt token',
       permissions: ['super_admin', 'customer'],
@@ -134,6 +128,7 @@ export class AuthService {
 
   async verifyOtpCode(verifyOtpInput: VerifyOtpDto): Promise<CoreResponse> {
     const { code } = verifyOtpInput
+    console.log("code", code)
     if(code === this.otpData ){
       return {
         message: 'success',
@@ -148,14 +143,16 @@ export class AuthService {
   }
   
   async sendOtpCode(otpInput: OtpDto): Promise<OtpResponse> {
+    console.log('sendOtpCode', otpInput)
     const otp = otpGenerator.generate(6, {upperCaseAlphabets: false, specialChars: false});
+    console.log("otp", otp);
     this.otpData = otp
     await this.sms.sendSMS(otpInput.phone_number, otp);
     return {
       message: 'success',
       success: true,
       id: '1',
-      provider: 'google',
+      provider: 'twilio',
       phone_number: otpInput.phone_number,
       is_contact_exist: true,
     };
