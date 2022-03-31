@@ -17,6 +17,7 @@ import {
   OtpResponse,
   VerifyOtpDto,
   OtpDto,
+  ErrorResponse,
 } from './dto/create-auth.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { CONTACT_MODEL } from 'src/common/constants';
@@ -37,28 +38,40 @@ export class AuthService {
     ) {}
     
   async register(createUserInput: RegisterDto): Promise<AuthResponse> {
-    const hashedPassword = await bcrypt.hash(createUserInput.password, 10);
-    const newUser = {
-      id: uuidv4(),
-      ...createUserInput,
-      password: hashedPassword,
-      permissions: [PERMISSIONS.CUSTOMER],
-      created_at: new Date(),
-      updated_at: new Date(),
-    };
+    try {
+      const hashedPassword = await bcrypt.hash(createUserInput.password, 10);
+      const newUser = {
+        id: uuidv4(),
+        ...createUserInput,
+        password: hashedPassword,
+        permissions: [PERMISSIONS.CUSTOMER],
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+  
+      const user = await this.usersService.create(newUser);
+      const { password, ...result } = user;
+      const payload = { ...result, sub: user._id}
+      return {
+        token: this.jwtService.sign(payload),
+        permissions: user.permissions,
+      };
+    } catch (error) {
+      console.log(error)
+      return error.message;
+    }
+      
+    }
+  
 
-    const user = await this.usersService.create(newUser);
-    const { password, ...result } = user;
-    const payload = { ...result, sub: user._id}
-    return {
-      token: this.jwtService.sign(payload),
-      permissions: user.permissions,
-    };
-  }
-
-  async login(loginInput: LoginDto): Promise<AuthResponse> {
+  async login(loginInput: LoginDto): Promise<AuthResponse|ErrorResponse> {
     const { email, password: plaintextPassword } = loginInput;
     const user = await this.usersService.findOneByEmail(email);
+    if (!user) return {
+      success: false,
+      message: 'user with this email not found'
+    };
+
     const isPasswordMatching = await bcrypt.compare(plaintextPassword, user.password);
 
     if (user && isPasswordMatching) {
@@ -69,9 +82,11 @@ export class AuthService {
         permissions: user.permissions,
       };
     }
-    return null;
+    return {
+      success: false,
+      message: 'password is incorrect',
+    }
   }
-
   async changePassword(
     changePasswordInput: ChangePasswordDto,
   ): Promise<CoreResponse> {

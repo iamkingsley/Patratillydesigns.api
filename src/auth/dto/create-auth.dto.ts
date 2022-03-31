@@ -41,6 +41,10 @@ export class AuthResponse {
   token: string;
   permissions: string[];
 }
+export class ErrorResponse {
+  success: boolean;
+  message: string;
+}
 export class CoreResponse extends CoreMutationOutput {}
 export class VerifyOtpDto {
   otp_id: string;
