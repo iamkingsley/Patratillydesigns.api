@@ -7,7 +7,7 @@ import { ATTRIBUTE_MODEL } from 'src/common/constants';
 export class UploadsService {
 
   constructor(@Inject(ATTRIBUTE_MODEL)
-  private attachmentRepository: Model<Attachment>) {}
+  private attachmentRepository: Model<Attachment>) { }
 
   async create(input): Promise<Attachment> {
     const saveInput = {

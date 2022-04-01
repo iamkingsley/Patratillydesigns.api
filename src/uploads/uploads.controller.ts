@@ -14,7 +14,7 @@ export class UploadsController {
   constructor(
     private readonly uploadsService: UploadsService,
     private cloudinaryService: CloudinaryService,
-    ) {}
+  ) { }
 
   // @Post()
   // @UseInterceptors(FilesInterceptor('attachment[]'))
@@ -30,23 +30,24 @@ export class UploadsController {
   //     },
   //   ];
   // }
-  
+
   @Post()
   @UseInterceptors(FilesInterceptor('attachment[]'))
   async uploadImageToCloudinary(@UploadedFiles() attachment: Array<Express.Multer.File>) {
-    console.log("file :", attachment)
-    return await this.cloudinaryService.uploadImage(attachment).then(async(response) => {
-       const {
+    return await this.cloudinaryService.uploadImage(attachment).then(async (response) => {
+      const {
         asset_id,
         url,
-       } = response;
-       const att = await this.uploadsService.create({
-          asset_id,
-          original: url,
-          thumbnail: url 
-        })
+        public_id
+      } = response;
+      const att = await this.uploadsService.create({
+        asset_id,
+        original: url,
+        thumbnail: url,
+        public_id: public_id,
+      })
 
-     return [
+      return [
         {
           _id: att._id,
           id: response.asset_id,

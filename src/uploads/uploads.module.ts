@@ -13,4 +13,4 @@ import { DatabaseModule } from 'src/database/database.module';
     ...attachmentProviders,
   ],
 })
-export class UploadsModule {}
+export class UploadsModule { }

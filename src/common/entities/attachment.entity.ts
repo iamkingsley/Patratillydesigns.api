@@ -5,4 +5,5 @@ export class Attachment extends CoreEntity {
   _id?: string;
   thumbnail?: string;
   original?: string;
+  public_id: string
 }
