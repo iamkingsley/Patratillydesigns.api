@@ -12,9 +12,10 @@ export class RegisterDto extends PickType(User, ['name', 'email', 'phone', 'pass
   permission: Permission = Permission.CUSTOMER;
 }
 
-export class LoginDto extends PartialType(
-  PickType(User, ['email', 'password']),
-) {}
+export class LoginDto {
+  username: string;
+  password: string;
+}
 
 export class SocialLoginDto {
   provider: string;

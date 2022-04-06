@@ -70,15 +70,15 @@ export class AuthService {
       return error.message;
     }
       
-    }
+  }
   
 
   async login(loginInput: LoginDto): Promise<AuthResponse|ErrorResponse> {
-    const { email, password: plaintextPassword } = loginInput;
-    const user = await this.usersService.findOneByEmail(email);
+    const { username, password: plaintextPassword } = loginInput;
+    const user = await this.usersService.loginWithEmailOrPhone(username);
     if (!user) return {
       success: false,
-      message: 'user with this email not found'
+      message: 'error-username-exists'
     };
 
     const isPasswordMatching = await bcrypt.compare(plaintextPassword, user.password);

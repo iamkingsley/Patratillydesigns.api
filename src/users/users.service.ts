@@ -72,6 +72,17 @@ export class UsersService {
       .exec();
   }
 
+  async loginWithEmailOrPhone(username) {
+    return this.userRepository
+      .findOne({ $or: [
+        { phone: username },
+        { email: username }
+      ]})
+      .populate('address')
+      .populate('profile.avatar')
+      .exec();
+  }
+
   async update(id: string, updateUserDto) {
     await this.userRepository.findOneAndUpdate(
       { id },
