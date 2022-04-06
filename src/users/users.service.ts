@@ -45,6 +45,10 @@ export class UsersService {
     return this.userRepository.findOne({ email }).exec(); 
   }
 
+  async findOneByPhone(phone: string) {
+    return this.userRepository.findOne({ phone }).exec(); 
+  }
+
   async findOneByUuid(id: string) {
     return this.userRepository.findOne({ id }).exec(); 
   }
@@ -52,6 +56,17 @@ export class UsersService {
   findOne(id: string) {
     return this.userRepository
       .findById(new mongoose.Types.ObjectId(id))
+      .populate('address')
+      .populate('profile.avatar')
+      .exec();
+  }
+
+  async findByPhoneOrEmail(input) {
+    return this.userRepository
+      .findOne({ $or: [
+        { phone: input.phone },
+        { email: input.email }
+      ]})
       .populate('address')
       .populate('profile.avatar')
       .exec();

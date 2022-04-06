@@ -37,8 +37,17 @@ export class AuthService {
     private sms: SmsService,
     ) {}
     
-  async register(createUserInput: RegisterDto): Promise<AuthResponse> {
+  async register(createUserInput: RegisterDto): Promise<AuthResponse|ErrorResponse> {
     try {
+      const userExists = await this.usersService
+        .findByPhoneOrEmail(createUserInput)
+      if (userExists) {
+        return {
+          success: false,
+          message: 'text-user-exists'
+        }
+      }
+
       const hashedPassword = await bcrypt.hash(createUserInput.password, 10);
       const newUser = {
         id: uuidv4(),

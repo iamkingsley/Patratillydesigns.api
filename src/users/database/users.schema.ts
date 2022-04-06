@@ -9,6 +9,7 @@ export const UserSchema = new mongoose.Schema({
   id: String,
   name: String,
   email: { type: String, unique: true },
+  phone: { type: String, unique: true },
   password: String,
   permissions: [{
     type: String,
