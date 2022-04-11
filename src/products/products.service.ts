@@ -93,10 +93,12 @@ export class ProductsService {
 
     if (search) {
       const parseSearchParams = search.split(';');
-      // type.slug is always included; so we need a length of 2 or more to filter
-      if (parseSearchParams?.length > 1) {
-        for (const searchParam of parseSearchParams) {
-          const [key, value] = searchParam.split(':');
+      for (const searchParam of parseSearchParams) {
+        const [key, value] = searchParam.split(':');
+        if (key === 'color' || key === 'size') {
+          data = data.filter((product) => product.variation_options
+          .find((vo) => vo.options.some((o) => o.value === value)))
+        } else {
           data = fuse.search(value)?.map(({ item }) => item);
         }
       }
