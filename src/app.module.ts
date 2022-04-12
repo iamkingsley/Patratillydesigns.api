@@ -25,6 +25,7 @@ import { MailModule } from './mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 import { SmsModule } from './sms/sms.module';
 import { FileManagerModule } from './file-manager/file-manager.module';
+import { GalleryModule } from './gallery/gallery.module';
 
 @Module({
   imports: [
@@ -52,7 +53,8 @@ import { FileManagerModule } from './file-manager/file-manager.module';
     MailModule,
     ConfigModule.forRoot(),
     SmsModule,
-    FileManagerModule, 
+    FileManagerModule,
+    GalleryModule, 
   ],
   controllers: [],
   providers: [],
