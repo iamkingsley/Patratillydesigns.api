@@ -6,6 +6,7 @@ import {
   Put,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { AttributesService } from './attributes.service';
 import { CreateAttributeDto } from './dto/create-attribute.dto';
@@ -21,8 +22,8 @@ export class AttributesController {
   }
 
   @Get()
-  findAll() {
-    return this.attributesService.findAll();
+  findAll(@Query() query) {
+    return this.attributesService.findAll(query);
   }
 
   @Get(':id')

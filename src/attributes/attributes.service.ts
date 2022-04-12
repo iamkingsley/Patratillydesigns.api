@@ -7,6 +7,12 @@ import { Model } from 'mongoose';
 import { ATTRIBUTE_MODEL } from 'src/common/constants';
 import slugify from 'slugify';
 import { slugOptions } from 'src/common/utils/slug-options';
+import Fuse from 'fuse.js';
+
+const options = {
+  keys: ['name'],
+  threshold: 0.3,
+}
 
 @Injectable()
 export class AttributesService {
@@ -23,16 +29,25 @@ export class AttributesService {
     return await attribute.save();
   }
 
-  async findAll() {
-    return await this.attributeRepository.find().exec();
+  async findAll({ limit, search, sortedBy, orderBy }) {
+    let data = await this.attributeRepository.find()
+    .sort({ [orderBy]: sortedBy})
+    .limit(limit)
+    .exec();
+    const fuse = new Fuse(data, options);
+    if (search) {
+      const [key, value] = search.split(':');
+      data = fuse.search(value)?.map(({ item }) => item);
+    }
+    return data;
   }
 
   async findOne(id: string) {
-    return await this.attributeRepository.findOne({id}).exec();
+    return await this.attributeRepository.findOne({ id }).exec();
   }
 
   async update(id: string, updateAttributeDto: UpdateAttributeDto): Promise<any> {
-    return this.attributeRepository.updateOne({id}, {
+    return this.attributeRepository.updateOne({ id }, {
       ...updateAttributeDto,
       updated_at: Date(),
       slug: slugify(updateAttributeDto.name, slugOptions),
@@ -40,6 +55,6 @@ export class AttributesService {
   }
 
   remove(id: string) {
-    return this.attributeRepository.remove({id}).exec();
+    return this.attributeRepository.remove({ id }).exec();
   }
 }
