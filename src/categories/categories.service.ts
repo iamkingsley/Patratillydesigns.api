@@ -54,7 +54,7 @@ export class CategoriesService {
     return category.save();
   }
 
-  async getCategories({ limit, page, search, parent }: GetCategoriesDto) {
+  async getCategories({ limit, page, search, parent, orderBy, sortedBy }: GetCategoriesDto) {
     if (!page) page = 1;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
@@ -62,27 +62,23 @@ export class CategoriesService {
       .find({ parent: null }) // shop navigation fix
       .populate('children')
       .populate('image')
-      .sort({ created_at: -1 })
+      .limit(limit)
+      .sort({ [orderBy]: sortedBy })
       .exec();
 
     const fuse = new Fuse(data, options);
-    /*
-      this makes the SHOP categories empty
-    
     if (search) {
       const parseSearchParams = search.split(';');
       for (const searchParam of parseSearchParams) {
         const [key, value] = searchParam.split(':');
-        // data = data.filter((item) => item[key] === value);
         data = fuse.search(value)?.map(({ item }) => item);
       }
     }
-    */
 
     // Disabled for Admin to work
-    if (parent === null) {
-      data = data.filter((item) => item.parent === null);
-    }
+    // if (parent === null) {
+    //   data = data.filter((item) => item.parent === null);
+    // }
 
     const results = data.slice(startIndex, endIndex);
     const url = `/categories?search=${search}&limit=${limit}&parent=${parent}`;
