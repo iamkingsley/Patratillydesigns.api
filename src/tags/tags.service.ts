@@ -9,13 +9,13 @@ import { GetTagsDto } from './dto/get-tags.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { Tag } from './entities/tag.entity';
 import { slugOptions } from 'src/common/utils/slug-options';
+import Fuse from 'fuse.js';
 @Injectable()
 export class TagsService {
 
   constructor(@Inject(TAG_MODEL) private tagsRepository: Model<Tag>) {}
 
   async create(createTagDto: CreateTagDto) {
-    // createTagDto.image = undefined;
     const { image } = createTagDto;
 
     const tag = {
@@ -33,9 +33,21 @@ export class TagsService {
     return await tagCreated.save();
   }
 
-  async findAll({ page, limit }: GetTagsDto) {
+  async findAll({ page, search, limit, orderBy, sortedBy }: GetTagsDto) {
     if (!page) page = 1;
-    const tags = await this.tagsRepository.find().sort({ created_at: -1 }).exec();
+    let tags = await this.tagsRepository.find()
+      .sort({ [orderBy]: sortedBy })
+      .limit(limit)
+      .exec();
+    
+    const fuse = new Fuse(tags, {
+      keys: ['name'],
+      threshold: 0.3
+    })
+    if (search) {
+      const [key, value] = search.split(':');
+      tags = fuse.search(value)?.map(({ item }) => item);
+    }
     const url = `/tags?limit=${limit}`;
     return {
       data: tags,

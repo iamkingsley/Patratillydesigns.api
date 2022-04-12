@@ -11,7 +11,7 @@ export class TagPaginator extends Paginator<Tag> {
 export class GetTagsDto extends PaginationArgs {
   orderBy?: QueryTagsOrderByColumn;
   sortedBy?: SortOrder;
-  text?: string;
+  search?: string;
   name?: string;
   hasType?: string;
 }
