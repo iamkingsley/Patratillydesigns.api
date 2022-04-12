@@ -11,7 +11,7 @@ export class UserPaginator extends Paginator<User> {
 export class GetUsersDto extends PaginationArgs {
   orderBy?: QueryUsersOrderByColumn;
   sortedBy?: SortOrder;
-  text?: string;
+  search?: string;
 }
 
 export enum QueryUsersOrderByColumn {
