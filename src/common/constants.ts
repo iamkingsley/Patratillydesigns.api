@@ -29,3 +29,5 @@ export const SETTINGS = 'SETTINGS';
 export const SETTINGS_MODEL = 'SETTINGS_MODEL';
 export const FILEMANAGER = 'FILEMANAGER';
 export const FILEMANAGER_MODEL = 'FILEMANAGER_MODEL'
+export const GALLERY_MODEL = 'GALLERY_MODEL'
+export const GALLERY = 'GALLERY'
