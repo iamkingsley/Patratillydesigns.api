@@ -56,9 +56,10 @@ export class OrdersService {
     tracking_number,
     search,
     shop_id,
+    orderBy,
+    sortedBy
   }: GetOrdersDto): Promise<OrderPaginator> {
     if (!page) page = 1;
-
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     let orders: Order[] = await this.ordersRepository
@@ -67,8 +68,9 @@ export class OrdersService {
       .populate('billing_address')
       .populate('shipping_address')
       .populate('customer')
-      .sort({ created_at: -1 })
+      .sort({ [orderBy]: sortedBy})
       .exec();
+    orders = orders.filter((order) => order.customer.id === customer_id)
 
     if (shop_id && shop_id !== 'undefined') {
       orders = orders?.filter((p) => p?.shop?.id === shop_id);
