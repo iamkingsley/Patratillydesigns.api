@@ -75,11 +75,11 @@ export class ProductsService {
     return prodDoc.save();
   }
 
-  async getProducts({ limit, page, search }: GetProductsDto): Promise<ProductPaginator> {
+  async getProducts({ limit, page, search, orderBy, sortedBy }: GetProductsDto): Promise<ProductPaginator> {
     if (!page) page = 1;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    
+
     let data = await this.productModel.find({ status: "publish" })
       .populate('tags')
       .populate('categories')
@@ -87,7 +87,8 @@ export class ProductsService {
       .populate('gallery')
       .populate('variations')
       .populate('variation_options')
-      .sort({ created_at: -1 })
+      .limit(limit)
+      .sort({ [orderBy]: sortedBy })
       .exec();
     const fuse = new Fuse(data, options);
 
