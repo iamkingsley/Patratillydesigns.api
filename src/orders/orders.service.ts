@@ -21,6 +21,7 @@ import {
   UpdateOrderStatusDto,
 } from './dto/create-order-status.dto';
 import { ORDER_MODEL, ORDERSTATUS_MODEL } from 'src/common/constants';
+import Fuse from 'fuse.js';
 @Injectable()
 export class OrdersService {
 
@@ -70,7 +71,19 @@ export class OrdersService {
       .populate('customer')
       .sort({ [orderBy]: sortedBy})
       .exec();
-    orders = orders.filter((order) => order.customer.id === customer_id)
+    // handle search
+    if (search) {
+      const fuse = new Fuse(orders, {
+        keys: ['customer.name'],
+        threshold: 0.3
+      })
+      const [key, value] = search.split(':');
+      orders = fuse.search(value)?.map(({ item }) => item);
+    }
+    // for logged in customers only
+    if (customer_id) {
+      orders = orders.filter((order) => order.customer.id === customer_id)
+    }
 
     if (shop_id && shop_id !== 'undefined') {
       orders = orders?.filter((p) => p?.shop?.id === shop_id);
