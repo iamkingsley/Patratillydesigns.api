@@ -36,4 +36,10 @@ export class GalleryService {
         };
     }
 
+    // async delete(id) {
+    //     return await this.galleryRepository.deleteOne({id});
+    // }
+    async remove(id: string): Promise<any> {
+        return this.galleryRepository.deleteOne({ id }).exec();
+    }
 }
