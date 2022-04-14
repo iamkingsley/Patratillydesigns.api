@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 
 export const GallerySchema = new mongoose.Schema({
     id: String,
+    slug: String,
     image: {
         type: mongoose.Types.ObjectId,
         ref: ATTACHMENT,

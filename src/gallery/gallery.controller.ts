@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { GalleryService } from './gallery.service';
 
 @Controller('gallery')
@@ -19,4 +19,15 @@ export class GalleryController {
     async deleteGallery(@Param('id') id: string) {
         return this._galleryService.remove(id);
     }
+
+    @Put(':id')
+    async updateGallery(@Param('id') id: string, @Body() updateGallery) {
+        return this._galleryService.update(id, updateGallery);
+    }
+
+    @Get(':id')
+    async getGalleryById(@Param('id') id: string) {
+        return this._galleryService.getGalleryBySlug(id);
+    }
+
 }

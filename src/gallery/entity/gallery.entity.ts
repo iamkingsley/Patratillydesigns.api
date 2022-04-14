@@ -4,5 +4,6 @@ import { CoreEntity } from 'src/common/entities/core.entity';
 export class Gallery extends CoreEntity {
     id: string;
     image: Attachment;
-    discription?: string;
+    description?: string;
+    slug: string;
 }

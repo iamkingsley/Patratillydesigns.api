@@ -4,4 +4,5 @@ export class GetGalleryDto {
   id: string;
   description: string;
   image: Attachment;
+  slug: string;
 }
